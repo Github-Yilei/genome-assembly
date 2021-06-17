@@ -11,7 +11,7 @@ file is sequence alignment file for SMRT™ sequencing data.
 [pbh5tools](https://github.com/PacificBiosciences/pbh5tools) is a collection of tools that can manipulate the content or extract data from cmp.h5 or bas.h5:
 
 - bash5tools.py can extract read sequences and quality values for both Raw and circular consensus sequencing (CCS) readtypes and use create `fastq` and `fasta` files.
-- cmph5tools.py is a multi-commandline tool that can check validiton, merge, sort, select, compare, summarize and stats cmp.h5
+- cmph5tools.py is a multi-command line tool that can check validity, merge, sort, select, compare, summarize, and stats of cmp.h5 file.
 
 ### R-pbh5
 
