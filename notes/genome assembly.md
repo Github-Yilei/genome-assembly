@@ -28,7 +28,7 @@ Quality control is a key step in high-throughput sequencing experiments, it is s
 
 **Data:**
 
-- illumina whole genome sequencing
+- reads of illumina whole genome sequencing
 
 ```
 # 1. Perform fastp quality control for 10 samples
@@ -54,7 +54,7 @@ heterozygosity rate were estimated using GCE software.
 
 **Data:**
 
-- illumina whole genome sequencing
+- reads of illumina whole genome sequencing
 
 ```
 seq_name=sequnence_name
@@ -77,7 +77,7 @@ genome_survey.R
 
 **Data:**
 
-- illumina whole genome sequence
+- reads of illumina whole genome sequencing
 
 **notice:**
 
@@ -201,6 +201,8 @@ done > ./temp/total.fasta
 
 HERA is a local assembly tool using assembled contigs and self-corrected long reads as input to resolves repeats efficiently by constructing a connection graph from an overlap graph and filling gaps.
 
+**Data:**
+
 - PacBio RS II reads：PacBio.fastq.gz
 - long contigs: ${prefix}.contigs.fasta
 
@@ -214,6 +216,8 @@ sh PBS_pipline.sh
 ## polish
 
 Correcting contiges based on self-alignment and depth, 1 Mb of genomes corresponds to 1 Gb of memory.
+
+**Data:**
 
 - illumina whole genome sequence
 - long contigs: ${prefix}.contigs.fasta
@@ -253,6 +257,10 @@ You can repeat this for several rounds by using round1.pilon round2.pilon
 ## Evaluate quality
 
 QUAST is much more informative if at least a close reference genome is provided along with the assemblies.
+
+**Data**:
+
+- long_condraft.asm.fasta
 
 ```
 # without parameter
