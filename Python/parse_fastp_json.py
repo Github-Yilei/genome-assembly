@@ -4,7 +4,7 @@
 """
 @ Description: Parsing the json files of fastp and building a ploting-ready data frame for R.
 @ Usage: python parse_fastp_json.py --input_path path --output ./result.txt
-@ Auther: YiLei
+@ Author: YiLei
 @ Date: 2021/06/16
 """
 
