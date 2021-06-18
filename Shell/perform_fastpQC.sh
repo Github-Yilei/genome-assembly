@@ -3,23 +3,22 @@ echo start FASTQ quality control and data-filtering with fastp at `date`
 
 ################################
 ### Variable information ###
-MainFile=MainFile
-
+Species=Species_name
+sampleID=reads_prefix
 
 ################################
 ### Project information ###
-ProjectDir=/share/home/stu_wuyilei/project/${MainFile}
-SampleList=${ProjectDir}/MetaData/sample_list
-RawReads=${ProjectDir}/Rawdata
+ProjectDir=/share/home/stu_wuyilei/project/Genome_assembly/${Species}
+RawReads=${ProjectDir}/Source_data/Illumina/Raw
 
-RawFastQC=${ProjectDir}/FastQCDir/RawFastQC
-CleanFastQC=${ProjectDir}/FastQCDir/CleanFastQC
-CleanReads=${ProjectDir}/CleanReads
+RawFastQC=${ProjectDir}/Source_data/Illumina/RawFastQC
+CleanFastQC=${ProjectDir}/Source_data/Illumina/CleanFastQC
+CleanReads=${ProjectDir}/Source_data/Illumina/Cleaned
+FastpDir=${ProjectDir}/Source_data/Illumina/FastpDir
 
-FastpDir=${ProjectDir}/FastpDir
-
-FastpLog=${Log}/FastpLog
 PBSLog=${ProjectDir}/workflow/QsubLog/FastpLog
+FastpLog=${Log}/Source_data/Illumina/FastpLog
+
 ################################
 ### Build directory ###
 function DirExists(){
@@ -48,6 +47,3 @@ echo ${PBSLog} ...OK
 echo everything seems fine, lets submit the Jobs
 cd ${ProjectDir}/workflow
 echo now, we are in file ${ProjectDir}/workflow, and ready to qsub jobs.
-
-### submit missions ###
-qsub -J 1-$1:1 fastp_QC.sh
