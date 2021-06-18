@@ -18,9 +18,7 @@ CleanReads=${ProjectDir}/CleanReads
 
 FastpDir=${ProjectDir}/FastpDir
 
-Log=${ProjectDir}/Log
 FastpLog=${Log}/FastpLog
-
 PBSLog=${ProjectDir}/workflow/QsubLog/FastpLog
 ################################
 ### Build directory ###
