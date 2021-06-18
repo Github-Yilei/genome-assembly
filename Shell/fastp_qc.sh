@@ -3,27 +3,26 @@
 #PBS -o QsubLog/FastpLog/
 #PBS -e QsubLog/FastpLog/
 #PBS -q workq
-#PBS -l nodes=1:ppn=5
+#PBS -l nodes=1:ppn=30
 #PBS -A YiLei
 
 ################################
 ### Variable information ###
-MainFile=MainFile
+Species=Species_name
+sampleID=reads_prefix
 
 ################################
 ### Project information ###
-ProjectDir=/share/home/stu_wuyilei/project/${MainFile}
-SampleList=${ProjectDir}/MetaData/sample_list
-RawReads=${ProjectDir}/Rawdata
+ProjectDir=/share/home/stu_wuyilei/project/Genome_assembly/${Species}
+RawReads=${ProjectDir}/Source_data/Illumina/Raw
 
-RawFastQC=${ProjectDir}/FastQCDir/RawFastQC
-CleanFastQC=${ProjectDir}/FastQCDir/CleanFastQC
-
-CleanReads=${ProjectDir}/CleanReads
-FastpDir=${ProjectDir}/FastpDir
+RawFastQC=${ProjectDir}/Source_data/Illumina/RawFastQC
+CleanFastQC=${ProjectDir}/Source_data/Illumina/CleanFastQC
+CleanReads=${ProjectDir}/Source_data/Illumina/Cleaned
+FastpDir=${ProjectDir}/Source_data/Illumina/FastpDir
 
 PBSLog=${ProjectDir}/workflow/QsubLog/FastpLog
-FastpLog=${Log}/FastpLog
+FastpLog=${Log}/Source_data/Illumina/FastpLog
 
 ################################
 ### Tools ###
@@ -32,10 +31,7 @@ Fastqc=/share/home/stu_wuyilei/biosoft/FastQC/fastqc
  
 ################################
 ### Main parameters ###
-RequiredCPU=5
-
-IFS=$'\r\n' GLOBIGNORE='*' command eval  'ARRAY=($(cat $SampleList))'
-sampleID=`echo ${ARRAY[(($PBS_ARRAY_INDEX-1))]}`
+RequiredCPU=30
 
 ################################
 ### Main process ###
