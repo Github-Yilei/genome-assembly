@@ -8,7 +8,7 @@
 file <- jellyfish_17k.histo
 
 kmer_count <- read.delim(file, head = F, sep = " ", stringsAsFactors = F)
-names(kmer_count) <- c('bin', 'frequencies')
+names(kmer_count) <- c('depth', 'frequencies')
 
 kmer_count$sum <- kmer_count[,1] * kmer_count[,2]
 
@@ -30,7 +30,7 @@ default_theme <- theme(panel.background = element_blank(),
       axis.line.y = element_line(colour = "black"),
       text = element_text(family = "TMN"))
 
-ggplot(data = kmer_count) + geom_point(aes(x = bin, y = freq))+
+ggplot(data = kmer_count) + geom_point(aes(x = depth, y = freq))+
   xlim(0, 100) + geom_vline(xintercept = Kdepth, color = "red") +
   labs(x = "depth",
        y = "Frequency(%)", 
