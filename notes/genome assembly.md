@@ -271,3 +271,183 @@ QUAST is much more informative if at least a close reference genome is provided 
 -r ../A.eriantha_genomic.fna draft.asm.fasta 
 pilon_round1.fasta pilon_round2.fasta pilon_round3.fasta pilon_round4.fasta
 ```
+
+
+## ALLHic Assmebly
+
+Hi-C is used to assemble genomes by using the 3D proximity relationships between short contigs and scaffolds (draft fragment sequences) to anchor, order and orient them. ALLHiC relies on an allelic contig table (Allele.ctg.table) to remove noisy Hi-C signals. However, if you are working on a **diploid genome**, you can ignore Allele.ctg.table and use the suggested [pipeline](https://github.com/tangerzhang/ALLHiC/wiki/ALLHiC:-scaffolding-of-a-simple-diploid-genome).
+
+
+**Data:**
+- long_contigs: draft.asm.fasta
+- Hi-C reads
+- draft.asm.fa (polished.fasta )
+- clean RNAseq reads: 1. RNAseq_R1.fq.gz, 2. RNAseq_R2.fq.gz
+- CDS from related species: reference.cds.fasta
+- gff3 from related species: reference.cds.gff
+
+### Filter low quality(optional)
+
+```
+# quality score < 20
+# adapter
+# shorter than  30bp
+~/miniconda3/bin/fastp \
+	-i reads_R1.fastq.gz -o reads_R1.fastq.gz \
+	-I reads_R2.fastq.gz  -O reads_R2.fastq.gz \
+	-q 20 -l 30 -w 10 &
+```
+
+### building Allele.ctg.table
+
+There are a couple of ways to generate this table. 
+
+#### [based on BLAST](https://github.com/tangerzhang/ALLHiC/wiki/ALLHiC:-identify-allelic-contigs)
+
+[This a BLAST-based method, which requires a chromosomal level assembly of closely related genome.](https://github.com/tangerzhang/ALLHiC/wiki/ALLHiC:-identify-allelic-contigs)
+
+```
+# build index
+~/miniconda3/bin/STAR\
+  --runThreadN 10 \
+  --runMode genomeGenerate \
+  --genomeDir STAR \
+  --genomeFastaFiles draft.asm.fa
+  
+# alignment
+~/miniconda3/bin/STAR\
+    --genomeDir STAR \
+    --runThreadN 10 \
+    --readFilesIn  RNAseq_R1.fq.gz  RNAseq_R2.fq.gz \
+    --readFilesCommand zcat \
+    --outFileNamePrefix sample\
+    --outSAMtype BAM SortedByCoordinate \
+    --outBAMsortingThreadN 10 \
+    --outSAMstrandField intronMotif \
+    --outFilterIntronMotifs RemoveNoncanonical
+
+# Spliced transcript
+~/miniconda3/bin/stringtie sampleAligned.sortedByCoord.out.bam -p 10 -o qry.gtf
+
+# GTF to GFF3
+~/miniconda3/pkgs/cufflinks-2.2.1-liulab/bin/gffread qry.gtf -o qry.gff
+
+# get cdna
+~/miniconda3/pkgs/cufflinks-2.2.1-liulab/bin/gffread \
+qry.gff -g draft.asm.fa -w qry.fa
+
+# uniform cds name and gene name for classify.pl
+sed -e 's/transcript/gene/' -e 's/ID/Name/' qry.gff > qry_gene.gff
+
+# for close related species
+ref=ref.gff
+grep '[[:blank:]]mRNA[[:blank:]]' $ref | sed -e 's/mRNA/gene/' -e 's/ID/Name/' > ref_gene.gff
+
+sed -e 's/ gene_id "/''/ -e 's/"; gene_version"/''/
+
+ref=ref.gff
+grep '[[:blank:]]mRNA[[:blank:]]' $ref | sed -e 's/mRNA/gene/' -e 's/Name/ID/' -e's/ID=transcript:/Name=/' > ref_gene.gff
+
+# now, we get ref.fa, ref_gene.gff, qry.fa, qry_gene.gff
+# build index
+~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/makeblastdb \
+-in ref.fa -dbtype nucl
+
+# alignment
+~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/blastn \
+-query qry.fa -db ref.fa \
+-out qry_vs_ref.blast.out -evalue 0.001 -outfmt 6 -num_threads 4 -num_alignments 1
+
+# filter 
+~/biosoft/ALLHiC/scripts/blastn_parse.pl \
+-i qry_vs_ref.blast.out -o Eblast.out -q qry.fa -b 1 -c 0.6 -d 0.8 
+
+# Classify alleles based on BLAST results
+~/biosoft/ALLHiC/scripts/classify.pl \
+-i Eblast.out -p 4 -r ref_gene.gff -g qry_gene.gff
+```
+After running the scripts above, two tables will be generated whose are Allele.gene.table and Allele.ctg.table.
+```
+
+### Perform AllHiC
+
+```
+# build sample  links
+ln -s ../polish/pilon_out/pilon.fasta draft.asm.fasta
+ln -s ../kiwi_row_data/Hic/SRR9329820.1_1_hq.fastq.gz reads_R1.fastq.gz
+
+# build sample.bam
+## construct index
+~/biosoft/bwa/bwa index -a bwtsw draft.asm.fasta  
+~/miniconda3/bin/samtools faidx draft.asm.fasta  
+
+########################alegment
+##  alignment each fastq.gz file
+##  bwa mem has a good accuracy
+####### by mem #########
+~/biosoft/bwa/bwa mem -t 20  draft.asm.fasta reads_R1.fastq.gz reads_R2.fastq.gz > sampe.bwa_mem.sam
+
+####### by aln #########
+~/biosoft/bwa/bwa aln -t 20 draft.asm.fasta reads_R1.fastq.gz > reads_R1.sai 
+
+~/biosoft/bwa/bwa aln -t 20 draft.asm.fasta reads_R2.fastq.gz > reads_R2.sai 
+
+## combine the result
+## 如果数据量很大，可以先将原始的fastq数据进行拆分，分别比对后分别执行sampe，最后合并成单个文件。
+~/biosoft/bwa/bwa sampe draft.asm.fasta reads_R1.sai reads_R2.sai reads_R1.fastq.gz reads_R2.fastq.gz > sampe.bwa_aln.sam 
+#############################
+
+## Filtering SAM file
+PreprocessSAMs.pl sampe.bwa_aln.sam draft.asm.fasta MBOI
+# (*)skip this step if you are using bwa mem for alignment
+# and ...REduced.paired_only.bam wold be used as sampe.clean.bam
+(*)filterBAM_forHiC.pl sampe.bwa_aln.REduced.paired_only.bam sampe.clean.sam
+
+## for bwa mem SAM
+PreprocessSAMs.pl sampe.bwa_mem.sam draft.asm.fasta MBOI
+
+~/miniconda3/bin/samtools view -t -b sampe.bwa_aln.REduced.paired_only.bam > sampe.clean.sam
+
+# combine the result of PreprocessSAMs.pl
+~/miniconda3/bin/samtools view -b -t draft.asm.fasta.fai sampe.clean.sam > sampe.clean.bam
+#########################
+
+
+# Prune for 多倍体(Canu 拼接后不需要prune)
+~/biosoft/ALLHiC/bin/ALLHiC_prune -i Allele.ctg.table -b sampe.clean.bam -r draft.asm.fasta
+
+# Partition
+~/biosoft/ALLHiC/bin/ALLHiC_partition -b sampe.clean.bam -r draft.asm.fasta -e AAGCTT -k 29 
+## 如果跳过Prune， 就直接使用sampe.clean.bam 代替 prunning.bam
+## -e and -k should be modified according result
+
+# Rescue
+# allhic extract will build clusters.txt (-c) and counts_RE.txt (-i) 
+# ~/biosoft/ALLHiC/bin/allhic extract draft_pe_aln.bam draft.fasta --RE AAGCTT
+ALLHiC_rescue -b sampe.clean.bam -r draft.asm.fasta \
+    -c prunning.clusters.txt \
+    -i prunning.counts_AAGCTT.txt
+
+# Optimize 
+~/biosoft/ALLHiC/bin/allhic extract sampe.clean.bam draft.asm.fasta --RE AAGCTT 
+
+for i in group*.txt; 
+do
+allhic optimize $i sampe.clean.clm
+done
+
+# Build
+~/biosoft/ALLHiC/bin/ALLHiC_build draft.asm.fasta  
+# get groups.asm.fasta和groups.agp
+
+# Check groups.asm.fasta file
+
+# plot
+~/miniconda3/bin/samtools faidx groups.asm.fasta
+cut -f 1,2 groups.asm.fasta.fai  > chrn.list
+
+~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.bwa_mem.REduced.paired_only.bam groups.agp chrn.list 500k pdf
+
+~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.clean.bam groups.agp chrn.list 500k pdf 
+
+```
