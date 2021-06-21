@@ -17,7 +17,7 @@ result_dict = {}
 merged_result_dict = {}
 
 def parse_fastp_json(args):
-	p = Path(args,input_path)
+	p = Path(args.input_path)
 	for child in p.iterdir():
 		if child.endswith('json'):
 			with open(child, 'r') as f:
@@ -47,7 +47,7 @@ if __name__=='__main__':
 	
 	parser.add_argument('--input_path',
 	                    dest = 'input_path',
-						          help = 'The absolute path of the fastp json file')
+			    help = 'The absolute path of the fastp json file')
 	
 	parser.add_argument('--output', 
                         dest = "output", 
