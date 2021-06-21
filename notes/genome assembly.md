@@ -37,6 +37,7 @@ Quality control is a key step in high-throughput sequencing experiments, it is s
 - reads of illumina whole genome sequencing
 
 ```
+cd ${project}/genome-assembly/${species}/genome-assembly
 # 1. Perform fastp quality control for 10 samples
 sh perform_fastpQC.sh 10 
 
