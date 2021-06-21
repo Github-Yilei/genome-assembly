@@ -219,6 +219,8 @@ sh PBS_pipline.sh
 
 ~/biosoft/quast-5.0.2/quast.py -t 20 -o quast_out ${prefix}-Final_Genome_HERA.fasta
 ```
+![](https://user-images.githubusercontent.com/82864917/122715233-29eb9180-d29b-11eb-93a4-3e06bbf44cde.png)
+
 
 ## polish
 
