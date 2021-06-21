@@ -2,8 +2,8 @@
 #_*_coding: utf-8 _*_
 
 """
-@ Description: the gaps of a genomes was filled with "N". 
-@ Usage: python genome_gap_calculator.py input.file >output.file
+@ Description: the gaps of a genomes was filled by "N" with a fixed number(100, 200). 
+@ Usage: python genome_gap_calculator.py input_file output_file
 @ Author: YiLei
 @ Date: 2020-10-14
 """
