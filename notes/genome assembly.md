@@ -1,5 +1,6 @@
 ## Overviews
 
+This genome assembly strategy employed both Illumina shortread and PacBio long-read sequencing data, with scaffolding informed by Hi–C chromosomal contact information. BioNano reads are optional at filling gap.
 
 ## Tools 
 
