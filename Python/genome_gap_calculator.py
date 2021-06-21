@@ -15,10 +15,10 @@ import argparse
 def genome_gap_calculator(args):
     summary = 0
     i = 0
-		results = "index\tchr_id\tstart\tend gap_length\tsummary\n"
+    results = "index\tchr_id\tstart\tend gap_length\tsummary\n"
     with open (args.input_path, "r") as genome_fa:
         for line in genome_fa:
-						whole_line = ''
+            whole_line = ''
             if line.startswith(">"):
                 chr_id = line.split()[0].replace(">", "")
             else:
