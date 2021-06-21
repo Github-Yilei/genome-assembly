@@ -18,6 +18,11 @@ This genome assembly strategy employed both Illumina shortread and PacBio long-r
 - [HERA](https://github.com/liangclab/HERA), [PBS version](https://github.com/Github-Yilei/HERA)
 - [purge_dups](https://github.com/dfguan/purge_dups)
 - [pilon](https://github.com/broadinstitute/pilon)
+- [Burrows–WheelerAligner]
+- [samtools]
+- [STAR]
+- [AllHiC](https://github.com/tangerzhang/ALLHiC)
+- 
 
 ## Quality control of NGS
 
@@ -303,7 +308,7 @@ Hi-C is used to assemble genomes by using the 3D proximity relationships between
 
 There are a couple of ways to generate this table. 
 
-#### [based on BLAST](https://github.com/tangerzhang/ALLHiC/wiki/ALLHiC:-identify-allelic-contigs)
+#### based on BLAST
 
 [This a BLAST-based method, which requires a chromosomal level assembly of closely related genome.](https://github.com/tangerzhang/ALLHiC/wiki/ALLHiC:-identify-allelic-contigs)
 
@@ -369,11 +374,9 @@ grep '[[:blank:]]mRNA[[:blank:]]' $ref | sed -e 's/mRNA/gene/' -e 's/Name/ID/' -
 ```
 After running the scripts above, two tables will be generated whose are Allele.gene.table and Allele.ctg.table.
 
-
-```
-
 ### Perform AllHiC
 
+```
 # build sample  links
 ln -s ../polish/pilon_out/pilon.fasta draft.asm.fasta
 ln -s ../kiwi_row_data/Hic/SRR9329820.1_1_hq.fastq.gz reads_R1.fastq.gz
@@ -389,25 +392,8 @@ ln -s ../kiwi_row_data/Hic/SRR9329820.1_1_hq.fastq.gz reads_R1.fastq.gz
 ####### by mem #########
 ~/biosoft/bwa/bwa mem -t 20  draft.asm.fasta reads_R1.fastq.gz reads_R2.fastq.gz > sampe.bwa_mem.sam
 
-####### by aln #########
-~/biosoft/bwa/bwa aln -t 20 draft.asm.fasta reads_R1.fastq.gz > reads_R1.sai 
-
-~/biosoft/bwa/bwa aln -t 20 draft.asm.fasta reads_R2.fastq.gz > reads_R2.sai 
-
-## combine the result
-## 如果数据量很大，可以先将原始的fastq数据进行拆分，分别比对后分别执行sampe，最后合并成单个文件。
-~/biosoft/bwa/bwa sampe draft.asm.fasta reads_R1.sai reads_R2.sai reads_R1.fastq.gz reads_R2.fastq.gz > sampe.bwa_aln.sam 
-#############################
-
-## Filtering SAM file
-PreprocessSAMs.pl sampe.bwa_aln.sam draft.asm.fasta MBOI
-# (*)skip this step if you are using bwa mem for alignment
-# and ...REduced.paired_only.bam wold be used as sampe.clean.bam
-(*)filterBAM_forHiC.pl sampe.bwa_aln.REduced.paired_only.bam sampe.clean.sam
-
 ## for bwa mem SAM
 PreprocessSAMs.pl sampe.bwa_mem.sam draft.asm.fasta MBOI
-
 ~/miniconda3/bin/samtools view -t -b sampe.bwa_aln.REduced.paired_only.bam > sampe.clean.sam
 
 # combine the result of PreprocessSAMs.pl
@@ -415,12 +401,11 @@ PreprocessSAMs.pl sampe.bwa_mem.sam draft.asm.fasta MBOI
 #########################
 
 
-# Prune for 多倍体(Canu 拼接后不需要prune)
+# Prune
 ~/biosoft/ALLHiC/bin/ALLHiC_prune -i Allele.ctg.table -b sampe.clean.bam -r draft.asm.fasta
 
 # Partition
 ~/biosoft/ALLHiC/bin/ALLHiC_partition -b sampe.clean.bam -r draft.asm.fasta -e AAGCTT -k 29 
-## 如果跳过Prune， 就直接使用sampe.clean.bam 代替 prunning.bam
 ## -e and -k should be modified according result
 
 # Rescue
