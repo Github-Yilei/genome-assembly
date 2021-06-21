@@ -367,11 +367,12 @@ grep '[[:blank:]]mRNA[[:blank:]]' $ref | sed -e 's/mRNA/gene/' -e 's/Name/ID/' -
 -i Eblast.out -p 4 -r ref_gene.gff -g qry_gene.gff
 ```
 After running the scripts above, two tables will be generated whose are Allele.gene.table and Allele.ctg.table.
+
+
 ```
 
 ### Perform AllHiC
 
-```
 # build sample  links
 ln -s ../polish/pilon_out/pilon.fasta draft.asm.fasta
 ln -s ../kiwi_row_data/Hic/SRR9329820.1_1_hq.fastq.gz reads_R1.fastq.gz
