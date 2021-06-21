@@ -37,10 +37,9 @@ def genome_gap_calculator(args):
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description =  "counting the length of gap and building a ploting-ready data frame for R")
     parser.add_argument('--input_path',
-	                    dest = 'input_path',
-						help = 'The absolute path of the genome fasta')
-	
-		parser.add_argument('--output', 
+                       dest = 'input_path',
+                       help = 'The absolute path of the genome fasta')
+    parser.add_argument('--output', 
                         dest = "output", 
                         help = 'The result file in tsv format')
     
