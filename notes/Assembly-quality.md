@@ -1,0 +1,1 @@
+First, the Illumina short reads were mapped back to the assembled contigs using Burrows–Wheeler Aligner software. The mapping rate of pairedend reads reached 97.2%, indicating high completeness and accuracy of the final assembly.
