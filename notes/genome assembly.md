@@ -37,7 +37,7 @@ Quality control is a key step in high-throughput sequencing experiments, it is s
 - reads of illumina whole genome sequencing
 
 ```
-cd ${project}/genome-assembly/${species}/genome-assembly
+cd ${project}/genome-assembly/workflow
 # 1. Perform fastp quality control for 10 samples
 sh perform_fastpQC.sh 10 
 
@@ -45,7 +45,7 @@ sh perform_fastpQC.sh 10
 sh trimmomatic_QC.sh
 
 # Summarising the output
-cd project
+cd ${project}/genome-assembly/${species}
 
 python3 parse_fastp_json.py --input_path FastpDir --output ./result.txt
 ~/miniconda3/bin/multiqc RawFastQC -q -o ./RawMultiqc
@@ -63,7 +63,8 @@ heterozygosity rate were estimated using GCE software.
 
 - reads of illumina whole genome sequencing
 
-```
+```shell
+cd ${ProjectDir}/00-GenomeSurvey
 seq_name=sequnence_name
 
 # For zip file
