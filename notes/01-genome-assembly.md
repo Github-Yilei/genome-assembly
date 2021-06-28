@@ -37,7 +37,7 @@ Quality control is a key step in high-throughput sequencing experiments, it is s
 - reads of illumina whole genome sequencing
 
 ```
-cd ${project}/genome-assembly/workflow
+cd ${project}/Genome_assembly/workflow
 # 1. Perform fastp quality control for 10 samples
 sh perform_fastpQC.sh 10 
 
@@ -45,7 +45,7 @@ sh perform_fastpQC.sh 10
 sh trimmomatic_QC.sh
 
 # Summarising the output
-cd ${project}/genome-assembly/${species}
+cd ${project}/Genome_assembly/${species}/Source_data/Illumina
 
 python3 parse_fastp_json.py --input_path FastpDir --output ./result.txt
 ~/miniconda3/bin/multiqc RawFastQC -q -o ./RawMultiqc
