@@ -21,3 +21,6 @@ Jiao, F., et al. (2020). "Chromosome-Level Reference Genome and Population Genom
 
 Liu, P. L., et al. (2020). "The Tetracentron genome provides insight into the early evolution of eudicots and the formation of vessel elements." Genome Biol 21(1): 291
 > a good reference for discussing the Whole-genome duplications.
+
+Yang, F. S., et al. (2020). "Chromosome-level genome assembly of a parent species of widely cultivated azaleas." Nat Commun 11(1): 5269.
+> Predictting regulatory network and the connection.
