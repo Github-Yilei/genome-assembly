@@ -18,7 +18,7 @@ def rename_gff(args):
 	cds   = 0
 	exon  = 0
 	prefix = args.prefix
-	with open(args.input_path, "r") as gff:
+	with open(args.input_file, "r") as gff:
 		for line in gff:
 			if not line.startswith("\n"):
 				records = line.split("\t")
@@ -49,9 +49,9 @@ def rename_gff(args):
 
 if __name__=='__main__':
 	parser = argparse.ArgumentParser(description = 'Rename the IDs of the gff3 file from EVidenceModeler')
-	parser.add_argument('--input_path',
-						dest = 'input_path',
-						help = 'The absolute path of the genome fasta')
+	parser.add_argument('--input_file',
+						dest = 'input_file',
+						help = 'gff3 file')
 	parser.add_argument('--prefix',
 						dest = 'prefix',
 						help = 'the prefix of gene')
