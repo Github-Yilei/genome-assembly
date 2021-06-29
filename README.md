@@ -8,7 +8,7 @@ Xie, J., et al. (2020). "A chromosome-scale reference genome of Aquilegia oxysep
 Wan, F., et al. (2019). "A chromosome-level genome assembly of Cydia pomonella provides insights into chemical ecology and insecticide resistance." Nat Commun 10(1): 4237.
 > Comparative analysis of synteny between two genomes provides evidence of fusion events. 
 
-![](https://user-images.githubusercontent.com/82864917/123761463-6d29ae00-d8f4-11eb-968e-44a8b90c95dd.png)
+![](https://user-images.githubusercontent.com/82864917/123764120-12458600-d8f7-11eb-9bb9-47d6b4f98d80.png)
 
 Liu, Y., et al. (2020). "Whole-genome sequencing and analysis of the Chinese herbal plant Gelsemium elegans." Acta Pharm Sin B 10(2): 374-382.
 > Preprocessing of the HiC sequence for LACHESIS is described in detail which was different from the usage of AllHiC.
