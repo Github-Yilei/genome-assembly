@@ -10,11 +10,11 @@
 3. protein homology detection and intron resolution
 	- [GenomeThreader](https://genomethreader.org/)
 4. RNA-based 
-	- HISAT2 + StringTie
-	- PASA: alignment of known ESTs, full-length cDNAs, and most recently, Trinity RNA-Seq assemblies to the genome.
-5. EVidenceModeler(EVM) to compute weighted consensus gene structure annotations based on the above (2, 3, 4)
+	- [HISAT2](https://daehwankimlab.github.io/hisat2/) + [StringTie](http://ccb.jhu.edu/software/stringtie/)
+	- [PASA](https://github.com/PASApipeline/PASApipeline): alignment of known ESTs, full-length cDNAs, and most recently, Trinity RNA-Seq assemblies to the genome.
+5. [EVidenceModeler(EVM)](https://github.com/EVidenceModeler/EVidenceModeler) to compute weighted consensus gene structure annotations based on the above (2, 3, 4)
 6. PASA to update the EVM consensus predictions, adding UTR annotations and models for alternatively spliced isoforms(leveraging 4 and 5).
-7. limited manual refinement of genome annotations using Apollo
+7. limited manual refinement of genome annotations using [Apollo](http://www.gmod.org/wiki/WebApollo_Installation)
 
 ## Transposable elements
 
