@@ -32,6 +32,7 @@ def eggnog_annotations_parser(args):
 					if i == '-':
 						continue
 					else:
+						i = i.replace("ko:", "")
 						combined = geneid + "\t" + i
 						reslut.append(combined)
 		dup_reslut = list(set(reslut))
