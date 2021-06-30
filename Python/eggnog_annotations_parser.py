@@ -32,8 +32,8 @@ def eggnog_annotations_parser(args):
 					if i == '-':
 						continue
 					else:
-						combined = geneid + "\t" + i + "\n"
-						reslut += combined
+						combined = geneid + "\t" + i
+						reslut.append(combined)
 		dup_reslut = list(set(reslut))
 		sep = '\n'
 		with open(args.output, "w") as term_file:
