@@ -54,15 +54,17 @@ def kegg_json_parser(args):
 
 					except KeyError:
 						continue
+	dup_K_to_ko = list(set(K_to_ko))
 	sep = '\n'
 	K2ko = args.outfile + '/K_to_ko.txt'
 	with open(K2ko, 'w+') as K2ko:
 		#term_file.write(reslut)
-		K2ko.write(sep.join(K_to_ko))
+		K2ko.write(sep.join(dup_K_to_ko))
 
+	dup_ko_to_Description = list(set(ko_to_Description))
 	ko2description = args.outfile + '/ko_to_Description.txt'
 	with open(ko2description, 'w+') as ko2description:
-		ko2description.write(sep.join(ko_to_Description))
+		ko2description.write(sep.join(dup_ko_to_Description))
       
 if __name__=='__main__':
 	parser = argparse.ArgumentParser(description = 'parsing the annotations file from eggnog-mapper and buidding a file')
