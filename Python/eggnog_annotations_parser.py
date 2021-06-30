@@ -12,11 +12,13 @@ import sys
 import argparse
 
 def eggnog_annotations_parser(args):
-	reslut = ''
+	reslut = list()
 	if args.key == 'GO':
 		index = int(10) - 1
 	elif args.key == 'KEGG':
 		index = int(12) - 1
+	elif args.key == 'info':
+		index = int(9) - 1
 	with open(args.input_file, "r") as tsv:
 		for line in tsv:
 			if line.startswith("#"):
@@ -27,10 +29,16 @@ def eggnog_annotations_parser(args):
 				tmp = records[index]
 				tmp_split = tmp.split(',')
 				for i in tmp_split:
-					combined = geneid + "\t" + i + "\n"
-					reslut += combined
+					if i == '-':
+						continue
+					else:
+						combined = geneid + "\t" + i + "\n"
+						reslut += combined
+		dup_reslut = list(set(reslut))
+		sep = '\n'
 		with open(args.output, "w") as term_file:
-			term_file.write(reslut)
+			#term_file.write(reslut)
+			term_file.write(sep.join(dup_reslut))
 		
 
 if __name__=='__main__':
