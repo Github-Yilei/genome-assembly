@@ -52,7 +52,7 @@ if __name__=='__main__':
 						help = 'key words, can be GO or KEGG')					
 	parser.add_argument('--output', 
 						dest = "output", 
-						help = 'The result file, plase check it by using "grep -o 'GO' HWB.emapper.annotations | wc -l"')
+						help = 'The result file, plase check it by using (grep -o GO HWB.emapper.annotations | wc -l)')
 											 
 	if len(sys.argv) <= 1:
 		parser.print_help()
