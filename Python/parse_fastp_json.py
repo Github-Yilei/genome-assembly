@@ -20,7 +20,7 @@ merged_result_dict = {}
 def parse_fastp_json(args):
 	p = Path(args.input_path)
 	for child in p.iterdir():
-		if child.endswith('json'):
+		if child.name.endswith('json'):
 			with open(child, 'r') as f:
 				result_dict[child] = json.load(f)
 				
