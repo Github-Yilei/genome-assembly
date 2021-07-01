@@ -23,8 +23,8 @@ def preprosessing_OrgDb(args):
 	GO_list = list()
 	KEGG_list = list()
 	
-	K_to_pathway = list()
-	pathway_to_Description = list()
+	K_pathway = list()
+	pathway_Description = list()
 	
 	sep = '\n'
 	
@@ -87,7 +87,7 @@ def preprosessing_OrgDb(args):
 							else:
 								ko_num =  tmp[1].strip(']').replace('PATH:', '').replace('BR:', '')
 								combine_tmp = ko_num + "\t" + ko_Description
-								pathway_to_Description.append(combine_tmp)
+								pathway_Description.append(combine_tmp)
 							
 							try:
 								for layer_4 in layer_3['children']:
@@ -96,7 +96,7 @@ def preprosessing_OrgDb(args):
 									K_num = tmp[0]
 									K_Description =  tmp[1]
 									K_ko = K_num + "\t" + ko_num
-									K_to_pathway.append(K_ko)
+									K_pathway.append(K_ko)
 
 							except KeyError:
 								continue
@@ -125,19 +125,19 @@ def preprosessing_OrgDb(args):
 	with open(GID_K, 'w+') as GID2K:
 		GID2K.write(sep.join(dup_KEGG_list))
 
-	dup_K_to_pathway = list(set(K_to_pathway))
-	dup_K_to_pathway.insert(0, "K\tPATHWAY")
+	dup_K_pathway = list(set(K_pathway))
+	dup_K_pathway.insert(0, "K\tPATHWAY")
 	
-	K_to_pathway = p.joinpath('K_to_pathway.txt')
-	with open(K_to_pathway, 'w+') as K2pathway:
-		K2pathway.write(sep.join(dup_K_to_pathway))
+	K_pathway = p.joinpath('K_pathway.txt')
+	with open(K_pathway, 'w+') as K2pathway:
+		K2pathway.write(sep.join(dup_K_pathway))
 		
-	dup_pathway_to_Description = list(set(pathway_to_Description))
-	dup_pathway_to_Description.insert(0, "PATHWAY\tdescription")
+	dup_pathway_Description = list(set(pathway_Description))
+	dup_pathway_Description.insert(0, "PATHWAY\tdescription")
 	
-	pathway_to_Description = p.joinpath('pathway_to_Description.txt')
-	with open(pathway_to_Description, 'w+') as pathway2Description:
-		pathway2Description.write(sep.join(dup_pathway_to_Description))
+	pathway_Description = p.joinpath('pathway_Description.txt')
+	with open(pathway_Description, 'w+') as pathway2Description:
+		pathway2Description.write(sep.join(dup_pathway_Description))
 		
 
 if __name__=='__main__':
