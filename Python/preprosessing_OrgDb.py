@@ -25,7 +25,7 @@ def preprosessing_OrgDb(args):
 	
 	K_pathway = list()
 	pathway_Description = list()
-	
+	K_term = list()
 	sep = '\n'
 	
 	for child in p.iterdir():
@@ -95,6 +95,9 @@ def preprosessing_OrgDb(args):
 									tmp = layer_4['name'].split('  ')
 									K_num = tmp[0]
 									K_Description =  tmp[1]
+									# KEGG Universal enrichment analysis
+									K_term_tmp = K_num + "\t" + K_Description 
+									K_term.append(K_term_tmp)
 									K_ko = K_num + "\t" + ko_num
 									K_pathway.append(K_ko)
 
@@ -138,7 +141,13 @@ def preprosessing_OrgDb(args):
 	pathway_Description = p.joinpath('pathway_Description.txt')
 	with open(pathway_Description, 'w+') as pathway2Description:
 		pathway2Description.write(sep.join(dup_pathway_Description))
-		
+	
+	dup_K_term = list(set(K_term))
+	dup_K_term.insert(0, "K_id\tTERM")
+	
+	K_term = p.joinpath('K_term.txt')
+	with open(K_term, 'w+') as K2term:
+		K2term.write(sep.join(dup_K_term))
 
 if __name__=='__main__':
 	parser = argparse.ArgumentParser(description = 'parsing the annotations file from eggnog-mapper and buidding a file')
