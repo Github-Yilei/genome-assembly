@@ -4,6 +4,8 @@
 """
 @ Description: Parsing the eggnog-mapper annotation file and kegg json file and buidding txt files for making OrgDb by AnnotationForge::makeOrgPackage.
 @ Url: https://www.kegg.jp/kegg-bin/get_htext?ko00001
+@ Url: http://www.geneontology.org/page/guide-go-evidence-codes # go-evidence-codes
+@ Url: https://www.genome.jp/kegg/pathway.htmls # layer description
 @ Usage: python preprosessing_OrgDb.py --input_path
 @ Author: Yilei
 @ Date:2020-02-06
@@ -24,11 +26,11 @@ def preprosessing_OrgDb(args):
 	K_to_pathway = list()
 	pathway_to_Description = list()
 	
+	sep = '\n'
 	
 	for child in p.iterdir():
 		if child.name.endswith('annotations'):
 			with open(child, 'r') as tsv:
-			
 				for line in tsv:
 					if line.startswith("#"):
 						continue
@@ -41,16 +43,17 @@ def preprosessing_OrgDb(args):
 						description = records[7]
 						gene_info_list.append(geneid + "\t" + gene_name + "\t" + description)
 				
-				
+						# the keys of GO  
 						GO = records[9]
 						GO_split = GO.split(',')
 						for i in GO_split:
 							if i == '-':
 								continue
 							else:
-								combined = geneid + "\t" + i
+							# go-evidence-codes
+								combined = geneid + "\t" + i + "\t" + "IEA"
 								GO_list.append(combined)
-				
+						# the keys of K number
 						KEGG = records[11]
 						KEGG_split = KEGG.split(',')
 						for i in KEGG_split:
@@ -62,14 +65,11 @@ def preprosessing_OrgDb(args):
 								KEGG_list.append(combined)
 		elif child.name.endswith('json'):
 			with open(child, 'r') as js:
-			
-
-			
 				# convert json to dict
 				map_dict = json.load(js)
 				maps = map_dict['children']
 				for layer_1 in maps:
-					# https://www.genome.jp/kegg/pathway.html
+					# this layer contain the maps
 					Pathway_Maps = layer_1['name'][6:]
 				
 					for layer_2 in layer_1['children']:
@@ -89,7 +89,6 @@ def preprosessing_OrgDb(args):
 								combine_tmp = ko_num + "\t" + ko_Description
 								pathway_to_Description.append(combine_tmp)
 							
-							
 							try:
 								for layer_4 in layer_3['children']:
 									# this is the last layer of kegg json, contain paired of gene and KO
@@ -103,8 +102,6 @@ def preprosessing_OrgDb(args):
 								continue
 	
 	# return the resluts
-	sep = '\n'
-	
 	dup_gene_info_list = list(set(gene_info_list))
 	dup_gene_info_list.insert(0, "GID\tGENENAME\tDESCRIPTION")
 	
