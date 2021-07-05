@@ -24,13 +24,15 @@ This genome assembly strategy employed both Illumina shortread and PacBio long-r
 - [AllHiC](https://github.com/tangerzhang/ALLHiC)
 - 
 
-## Quality control of NGS
+## Quality control of sequence
 
 Quality control is a key step in high-throughput sequencing experiments, it is should be the first step unless otherwise noted. Not only will this give you an idea of the quality of your data but it will also clean up and reduce the size of your data, making downstream analysis much easier! The main steps in this process are:
 
 - Removing low quality bases
 - Removing low complexity reads
 - Remove artifacts (barcodes, adapters, chimeras)
+
+The chloroplast and mitochondrion genome sequence MAY be removed from Pacbio reads according to several close-related species. 
 
 **Data:**
 
@@ -50,6 +52,15 @@ cd ${project}/Genome_assembly/${species}/Source_data/Illumina
 python3 parse_fastp_json.py --input_path FastpDir --output ./result.txt
 ~/miniconda3/bin/multiqc RawFastQC -q -o ./RawMultiqc
 ~/miniconda3/bin/multiqc CleanFastQC -q -o ./CleanMultiqc
+```
+
+**Data:**
+- reads of Pacbio long reads
+- chloroplast and mitochondrion genome from NCBI.
+
+```
+  ~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/makeblastdb -in combined.fa -title combined_DB -dbtype nucl -out conbined_database
+  ~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/blastn -db conbined_database -query pacbio.fa -num_threads 20 -evalue 1e-5 -outfmt 6 -out pacbio_blastn.txt
 ```
 
 ## Genome survey
