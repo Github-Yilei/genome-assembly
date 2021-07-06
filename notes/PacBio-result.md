@@ -44,7 +44,20 @@ If there is not the CCS files, one can generate HiFi Reads with PacBio [CCS](htt
 tar -xvf PacBio.tar
 ```
 
-## Canu assembly
+## Removing mitochondrion and chloroplast genome
+
+mitochondrion and chloroplast genomes were downloaded from the NCBI database and these sequences were used to find read sequences which are similar to the PacBio reads by using GMAP or minimap2 aligner at default setting.
+
+``` 
+~/miniconda3/bin/minimap2 -ax map-hifi MitochondrionChloroplast.fa PacBio_ccs.fastq > minimap2.sam
+~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > unmapped.fq.gz
+
+# key informations will be printed on screen or re-get by
+~/miniconda3/bin/samtools flagstat minimap2.sam
+cat unmapped.fq.gz | echo $((`wc -l`/4))
+```
+
+## Notes
 
 1. HiCanu has support for PacBio HiFi data by specify [-pacbio-hifi](https://canu.readthedocs.io/en/latest/quick-start.html?highlight=hifi#assembling-pacbio-hifi-with-hicanu).
 
