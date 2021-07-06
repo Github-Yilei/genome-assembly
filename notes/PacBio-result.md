@@ -49,3 +49,8 @@ tar -xvf PacBio.tar
 1. HiCanu has support for PacBio HiFi data by specify [-pacbio-hifi](https://canu.readthedocs.io/en/latest/quick-start.html?highlight=hifi#assembling-pacbio-hifi-with-hicanu).
 
 2. HiCanu consensus sequences using PacBio HiFi data are typically well above 99.99% We discourage any post-processing/polishing of these assemblies as mis-mapping within repeats can introduce [errors](https://canu.readthedocs.io/en/latest/quick-start.html?highlight=hifi#consensus-accuracy).
+
+## Papers
+
+https://www.pacb.com/wp-content/uploads/Kronenberg-ASHG-2019-High-quality-human-genomes-achieved-through-HiFi-sequence-data-and-FALCON-Unzip-assembly.pdf
+https://www.biorxiv.org/content/10.1101/2020.03.14.992248v2
