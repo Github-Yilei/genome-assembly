@@ -32,3 +32,14 @@ for i in ${Source_data} ${GenomeSurvey} ${Contigs} ${Scaffolds} ${PseudoChromoso
 do 
 	DirExists $i
 done 
+
+echo ${Source_data} ...OK
+echo ${GenomeSurvey} ...OK
+echo ${Contigs} ...OK
+echo ${Scaffolds} ...OK
+echo ${PseudoChromosomes} ...OK
+echo ${EvaluateQuality} ...OK
+echo ${GenomeAnnotation} ...OK
+echo ${GenomesComparison} ...OK
+
+echo 'making directory is done'
