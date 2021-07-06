@@ -3,17 +3,21 @@ echo making dir for genome assembly
 
 ################################
 ### Variable information ###
-MainFile=Cclementina
-Species=test
+ProjectDir=/share/home/stu_wuyilei/Projects/GenomeAssembly/Species
 
 ################################
 ### Project information ###
-ProjectDir=/share/home/stu_wuyilei/Projects/GenomeAssembly/${Species}
+Source_data=${ProjectDir}/Source_data
 
+### genome  assembly
 GenomeSurvey=${ProjectDir}/00-GenomeSurvey
-Assembly=${ProjectDir}/01-Assembly
-EvaluateQuality=${ProjectDir}/02-EvaluateQuality
+Contigs=${ProjectDir}/01-Contigs
+Scaffolds=${ProjectDir}/02-Scaffolds
+PseudoChromosomes=${ProjectDir}/03-PseudoChromosomes
 
+EvaluateQuality=${ProjectDir}/04-QualityEvaluation
+GenomeAnnotation=${ProjectDir}/05-GenomeAnnotation
+GenomesComparison=${ProjectDir}/06-GenomesComparison
 
 ################################
 ### Making directory ###
@@ -24,7 +28,7 @@ function DirExists(){
 	fi
 }
 
-for i in ${RawFastQC} ${CleanFastQC} ${CleanReads} ${FastpDir} ${Log} ${FastpLog} ${PBSLog}
+for i in ${Source_data} ${GenomeSurvey} ${Contigs} ${Scaffolds} ${PseudoChromosomes} ${EvaluateQuality} ${GenomeAnnotation}  ${GenomesComparison}
 do 
 	DirExists $i
 done 
