@@ -26,3 +26,11 @@ Liu, P. L., et al. (2020). "The Tetracentron genome provides insight into the ea
 
 Yang, F. S., et al. (2020). "Chromosome-level genome assembly of a parent species of widely cultivated azaleas." Nat Commun 11(1): 5269.
 > Predictting regulatory network and the connection.
+
+## Directory management
+Source_data: HiC  Illumina  Pacbio  Related_species
+00-GenomeSurvey: jellyfish  GCE
+01-Contigs: 
+02-Scaffolds: 
+03-PseudoChromosomes: 
+04-QualityEvaluation: 
