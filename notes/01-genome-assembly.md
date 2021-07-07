@@ -18,11 +18,11 @@ This genome assembly strategy employed both Illumina shortread and PacBio long-r
 - [HERA](https://github.com/liangclab/HERA), [PBS version](https://github.com/Github-Yilei/HERA)
 - [purge_dups](https://github.com/dfguan/purge_dups)
 - [pilon](https://github.com/broadinstitute/pilon)
-- [Burrows–WheelerAligner]
-- [samtools]
-- [STAR]
+- [Burrows–WheelerAligner](https://github.com/lh3/bwa)
+- [samtools](https://github.com/samtools)
+- [STAR](https://github.com/alexdobin/STAR)
 - [AllHiC](https://github.com/tangerzhang/ALLHiC)
-- 
+- [fastool](https://github.com/fstrozzi/Fastool)
 
 ## Quality control of sequence
 
@@ -41,7 +41,7 @@ The chloroplast and mitochondrion genome sequence MAY be removed from Pacbio rea
 ```
 cd ${project}/Genome_assembly/workflow
 # 1. Perform fastp quality control for 10 samples
-sh perform_fastpQC.sh 10 
+sh perform_fastpQC.sh
 
 # or 2. Perform trimmomatic Trimming 
 sh trimmomatic_QC.sh
@@ -66,7 +66,11 @@ python3 parse_fastp_json.py --input_path FastpDir --output ./result.txt
 ## Genome survey
 
 Using Illumina short reads, k-mer distribution was estimated using jellyfish. The overall characteristics of the genome such as genome size, repeat contents, and
-heterozygosity rate were estimated using GCE software.
+heterozygosity rate were estimated using GCE software. 
+
+**Notice:**
+
+- In an actual genome or finished sequence, a k-mer and its reverse complement are not equivalent, hence using the -C switch does not make sense. 
 
 ### jellyfish
 
@@ -79,13 +83,16 @@ cd ${ProjectDir}/00-GenomeSurvey
 seq_name=sequnence_name
 
 # For zip file
-~/miniconda3/pkgs/kmer-jellyfish-2.3.0-hc9558a2_1/bin/jellyfish count -m 17 -o jellyfish_17k -s 100M -t 3 -c 8 -C <(zcat ${seq_name}_1.fastq.gz) <(zcat ${seq_name}_2.fastq.gz)
+~/miniconda3/pkgs/kmer-jellyfish-2.3.0-hc9558a2_1/bin/jellyfish count -m 17 -o jellyfish_17k -s 100M -t 3 -C <(zcat ${seq_name}_1.fq.gz) <(zcat ${seq_name}_2.fq.gz)
 
 # compute the histogram of the k-mer occurrences
 ~/miniconda3/pkgs/kmer-jellyfish-2.3.0-hc9558a2_1/bin/jellyfish histo -t 3 jellyfish_17k > jellyfish_17k.histo
 
 #  summary states
 ~/miniconda3/pkgs/kmer-jellyfish-2.3.0-hc9558a2_1/bin/jellyfish stats jellyfish_17k
+
+# checking  
+awk '{b = $1*$2; print b"\t"$1}' jellyfish_17k.hist | sort -n -k 1
 
 # plot and statistics
 genome_survey.R
@@ -113,30 +120,49 @@ For the total kmer number for gce option "-g", and the depth frequency file for 
 ~/biosoft/gce-1.0.0/gce -g `value of code 1` -f prefix.kmer.freq.stat.2colum -c 75 -H 1 >gce2.table 2>gce2.log
 ```
 
-## Working with PACBIO sequencing data
+## Removing mitochondrion and chloroplast genome
+mitochondrion and chloroplast genomes were downloaded from the NCBI database and these sequences were used to find read sequences which are similar to the PacBio reads by using GMAP or minimap2 aligner at default setting.
 
-The bas.h5 file and associated bax.h5 files are the main output files produced by the primary analysis pipeline on the PacBio® RS II which contain base-call information. the cmp.h5 is the primary
-file is sequence alignment file for SMRT™ sequencing data.
+```
+--secondary=yes|no
+~/miniconda3/bin/minimap2 -ax map-hifi MitochondrionChloroplast.fa PacBio_ccs.fastq > minimap2.sam
+~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > unmapped.fq.gz
 
-### pbh5tools
+# secondary=no
+~/miniconda3/bin/minimap2 -ax map-hifi --secondary=no MitochondrionChloroplast.fa PacBio_ccs.fastq > minimap2.sam
+~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > minimap2_no_secondary.sam
 
-pbh5tools is a collection of tools that can manipulate the content or extract data from cmp.h5 or bas.h5:
+# key informations will be printed on screen or re-get by
+~/miniconda3/bin/samtools flagstat minimap2.sam
+cat unmapped.fq.gz | echo $((`wc -l`/4))
+```
 
-- bash5tools.py can extract read sequences and quality values for both Raw and circular consensus sequencing (CCS) readtypes and use create `fastq` and `fasta` files.
-- cmph5tools.py is a multi-command line tool that can check validity, merge, sort, select, compare, summarize, and stats of cmp.h5 file.
+## assembley
 
-### R-pbh5
+### HiFiasm
 
-R-pbh5 is an R package for parseing HDF5 from the Pacific Biosciences. 
+Hifiasm is a fast haplotype-resolved de novo assembler for PacBio HiFi reads. Hifiasm does not perform scaffolding for now. You need to run a standalone scaffolder such as SALSA, AllHic or 3D-DNA to scaffold phased haplotigs.
 
-### stsPlots
+**Notice**:
+- When parental short reads are available, hifiasm can also generate a pair of haplotype-resolved assemblies with trio binning. 
+- Hifiasm can generate a pair of haplotype-resolved assemblies with paired-end Hi-C reads or Strand-seq.
 
-stsPlots allow the user to assess chip loading, readlength, read score, SNR, and oxygen exclusion to assess potential SMRTcell loading problems. seeing  the associated powerpoint for more information.
 
-## canu assembley
+与其他基于图形的汇编程序不同，HiFiasm致力于保持所有单倍型的连续性。 HiCanu只试图保持一个亲本单倍型的连续性，并且经常破坏另一个单倍型的连续性，当分离亲本单倍型时，这些突变点将导致单倍型分解的碎片—HiCanu没有充分利用HiFi Reads Hifiasm针对HiFi特点而开发，在hifi数据的组装表现上较同类软件更为突出，在多个基因组上表现出了更高的准确性和组装的连续性。 
+
+https://github.com/chhylp123/hifiasm/issues/46 
+
+https://github.com/chhylp123/hifiasm#hi-c-integration 
+
+https://github.com/tangerzhang/ALLHiC/issues/86
+
+### canu 
 
 Canu assembles reads from PacBio RS II or Oxford Nanopore MinION instruments into uniquely-assemblable contigs, unitigs.
 
+**Notice**:
+- HiCanu has support for PacBio HiFi data by specify -pacbio-hifi.
+- HiCanu consensus sequences using PacBio HiFi data are typically well above 99.99% We discourage any post-processing/polishing of these assemblies as mis-mapping within repeats can introduce errors.
 - The -p option, to set the file name prefix of intermediate and output files.
 - The -d option, to create the assembly-directory and run in that directory.
 - The -s option will import a list of parameters from the supplied specification (‘spec’) file that will be applied before any from the command line are used.
