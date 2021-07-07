@@ -38,6 +38,6 @@ ggplot(data = kmer_count) + geom_point(aes(x = depth, y = freq))+
   default_theme
 
 # genome size
-## The first error peak can be removed 
+## The 1st or 2ed point might be error peaks which should be removed.
 genome_size <-  Knum/Kdepth/1000000
 print(genome_size)
