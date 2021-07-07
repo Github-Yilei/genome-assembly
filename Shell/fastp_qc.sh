@@ -43,7 +43,7 @@ echo Fastqc for raw reads finished with ${sampleID} at `date`
 
 ### Quality control ###
 ${Fastp} -i ${RawReads}/${sampleID}_1.fq.gz -I ${RawReads}/${sampleID}_2.fq.gz -o ${CleanReads}/${sampleID}_1.fq.gz \
-	-O ${CleanReads}/${sampleID}_2.fq.gz -W 5 -M 20 -5 -3 -l 50 -w ${RequiredCPU} \
+	-O ${CleanReads}/${sampleID}_2.fq.gz -W 5 -M 20 -5 -3 -l 50 -z 6 -w ${RequiredCPU} \
 	-j ${FastpDir}/${sampleID}.json -h ${FastpDir}/${sampleID}.html > ${FastpLog}/${sampleID}.qc.log 2>&1
 echo fastp finished with ${sampleID} at `date`
 
