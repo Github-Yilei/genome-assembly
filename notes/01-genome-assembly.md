@@ -347,7 +347,6 @@ Hi-C is used to assemble genomes by using the 3D proximity relationships between
 **Data:**
 - long_contigs: draft.asm.fasta
 - Hi-C reads
-- draft.asm.fa (polished.fasta )
 - clean RNAseq reads: 1. RNAseq_R1.fq.gz, 2. RNAseq_R2.fq.gz
 - CDS from related species: reference.cds.fasta
 - gff3 from related species: reference.cds.gff
@@ -373,6 +372,8 @@ There are a couple of ways to generate this table.
 [This a BLAST-based method, which requires a chromosomal level assembly of closely related genome.](https://github.com/tangerzhang/ALLHiC/wiki/ALLHiC:-identify-allelic-contigs)
 
 ```
+cd ${Scaffolds}
+ln -s ${Contigs}/contigs.fa ./draft.asm.fa
 # build index
 ~/miniconda3/bin/STAR\
   --runThreadN 10 \
