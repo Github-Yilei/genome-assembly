@@ -124,17 +124,30 @@ For the total kmer number for gce option "-g", and the depth frequency file for 
 mitochondrion and chloroplast genomes were downloaded from the NCBI database and these sequences were used to find read sequences which are similar to the PacBio reads by using GMAP or minimap2 aligner at default setting.
 
 ```
---secondary=yes|no
 ~/miniconda3/bin/minimap2 -ax map-hifi MitochondrionChloroplast.fa PacBio_ccs.fastq > minimap2.sam
-~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > unmapped.fq.gz
 
 # secondary=no
-~/miniconda3/bin/minimap2 -ax map-hifi --secondary=no MitochondrionChloroplast.fa PacBio_ccs.fastq > minimap2.sam
-~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > minimap2_no_secondary.sam
+~/miniconda3/bin/minimap2 -ax map-hifi --secondary=no MitochondrionChloroplast.fa PacBio_ccs.fastq > minimap2_no_secondary.sam
+~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > unmapped_minimap2_no_secondary.fq.gz
 
+~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > mapped_minimap2_no_secondary.fq.gz
 # key informations will be printed on screen or re-get by
+
+# checking reslut
+## checking secondary mapped reads
 ~/miniconda3/bin/samtools flagstat minimap2.sam
-cat unmapped.fq.gz | echo $((`wc -l`/4))
+
+## checing mapped and unmapped reads
+cat acBio_ccs.fastq | echo $((`wc -l`/4))
+cat unmapped_minimap2_no_secondary.fq.gz | echo $((`wc -l`/4))
+cat mapped_minimap2_no_secondary.fq.gz | echo $((`wc -l`/4))
+
+## cheching with blastn
+~/miniconda3/bin/seqkit fq2fa mapped.fq.gz -o mapped.fa -j 10
+nohup /share/home/stu_wuyilei/biosoft/ppsPCP_file/ncbi-blast-2.11.0+/bin/blastn -db combined_database -query mapped.fa -num_threads 10 -evalue 1e-6 -outfmt '6 qseqid sseqid pident nident qlen slen evalue bitscore' -out mapped_blastn.txt > mapped_blastn_log.file  2>&1 &
+
+~/miniconda3/bin/seqkit fq2fa unmapped.fq.gz -o unmapped.fa -j 10
+nohup /share/home/stu_wuyilei/biosoft/ppsPCP_file/ncbi-blast-2.11.0+/bin/blastn -db combined_database -query unmapped.fa -num_threads 10 -evalue 1e-6 -outfmt '6 qseqid sseqid pident nident qlen slen evalue bitscore' -out unmapped_blastn.txt >unmapped_blastn_log.file  2>&1 &
 ```
 
 ## assembley
