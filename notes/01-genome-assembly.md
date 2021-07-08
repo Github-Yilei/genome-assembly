@@ -130,7 +130,7 @@ mitochondrion and chloroplast genomes were downloaded from the NCBI database and
 ~/miniconda3/bin/minimap2 -ax map-hifi --secondary=no MitochondrionChloroplast.fa PacBio_ccs.fastq > minimap2_no_secondary.sam
 ~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > unmapped_minimap2_no_secondary.fq.gz
 
-~/miniconda3/bin/samtools fastq -f 4 minimap2.sam -@ 30 -c 6 > mapped_minimap2_no_secondary.fq.gz
+~/miniconda3/bin/samtools fastq -F 4 minimap2.sam -@ 30 -c 6 > mapped_minimap2_no_secondary.fq.gz
 
 # checking reslut
 ## key informations will be printed on screen or re-got by
