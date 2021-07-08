@@ -148,6 +148,10 @@ nohup /share/home/stu_wuyilei/biosoft/ppsPCP_file/ncbi-blast-2.11.0+/bin/blastn 
 
 ~/miniconda3/bin/seqkit fq2fa unmapped.fq.gz -o unmapped.fa -j 10
 nohup /share/home/stu_wuyilei/biosoft/ppsPCP_file/ncbi-blast-2.11.0+/bin/blastn -db combined_database -query unmapped.fa -num_threads 10 -evalue 1e-6 -outfmt '6 qseqid sseqid pident nident qlen slen evalue bitscore' -out unmapped_blastn.txt >unmapped_blastn_log.file  2>&1 &
+
+# making plot data frame
+python blast2plot.py --blast mapped_blastn.txt --out parsed_mapped_blastn.txt
+awk '{ print $4}' parsed_mapped_blastn.txt | sort -n
 ```
 
 ## assembley
@@ -165,6 +169,8 @@ Hifiasm is a fast haplotype-resolved de novo assembler for PacBio HiFi reads. Hi
 /share/home/stu_wuyilei/miniconda3/bin/hifiasm -o hifiasm -t 40 PacBio_ccs.fq.gz
 # get primary contigs in FASTA
 awk '/^S/{print ">"$2;print $3}' hifiasm_ctg.gfa >hifiasm_ctg.fa
+
+blast2plot.R
 ```
 
 与其他基于图形的汇编程序不同，HiFiasm致力于保持所有单倍型的连续性。 HiCanu只试图保持一个亲本单倍型的连续性，并且经常破坏另一个单倍型的连续性，当分离亲本单倍型时，这些突变点将导致单倍型分解的碎片—HiCanu没有充分利用HiFi Reads Hifiasm针对HiFi特点而开发，在hifi数据的组装表现上较同类软件更为突出，在多个基因组上表现出了更高的准确性和组装的连续性。 
