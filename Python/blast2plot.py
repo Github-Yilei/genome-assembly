@@ -27,7 +27,7 @@ def blast2plot(args):
     my_result = ""
     for k,v in pool.items():
         if len(v) == 1:
-            my_result += "\t".join(pool[k][0])
+            my_result += "\t".join(pool[k][0])  + "\n"
         else:
             tmp_list = list()
             tmp_max = 0
@@ -37,7 +37,7 @@ def blast2plot(args):
                 if a > b:
                     tmp_max = a
                     tmp_list = tmp    
-            my_result += "\t".join(pool[k][0])
+            my_result += "\t".join(pool[k][0]) + "\n"
 
     with open(output_file, 'w') as longest:
         longest.write(my_result)
