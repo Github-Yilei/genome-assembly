@@ -25,8 +25,8 @@ def parse_fastp_json(args):
 			with open(child, 'r') as f:
 				result_dict[child] = json.load(f)
 				key = child.name.replace(".json", "")
-				key1 = key + '+before_filtering'
-				key2 = key + '+after_filtering'
+				key1 = key + ';before_filtering'
+				key2 = key + ';after_filtering'
 				
 				merged_result_dict[key1] = {'total_reads' : result_dict[child]["summary"]['before_filtering']['total_reads'], 
 											'total_bases' : result_dict[child]["summary"]['before_filtering']['total_bases'], 
