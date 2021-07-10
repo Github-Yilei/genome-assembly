@@ -27,15 +27,15 @@ def parse_fastp_json(args):
 				key1 = key + '+before_filtering'
 				key2 = key + '+after_filtering'
 				
-				merged_result_dict[key1] = {'total_reads' : result_dict[i]["summary"]['before_filtering']['total_reads'], 
-											'total_bases' : result_dict[i]["summary"]['before_filtering']['total_bases'], 
-											'q20_rate' : result_dict[i]["summary"]['before_filtering']['q20_rate'], 
-											'q30_rate' : result_dict[i]["summary"]['before_filtering']['q30_rate']
+				merged_result_dict[key1] = {'total_reads' : result_dict[child]["summary"]['before_filtering']['total_reads'], 
+											'total_bases' : result_dict[child]["summary"]['before_filtering']['total_bases'], 
+											'q20_rate' : result_dict[child]["summary"]['before_filtering']['q20_rate'], 
+											'q30_rate' : result_dict[child]["summary"]['before_filtering']['q30_rate']
 										   }
-				merged_result_dict[key2] = {'total_reads' : result_dict[i]["summary"]['after_filtering']['total_reads'],
-                                            'total_bases' : result_dict[i]["summary"]['after_filtering']['total_bases'],
-                                            'q20_rate' : result_dict[i]["summary"]['after_filtering']['q20_rate'],
-                                            'q30_rate' : result_dict[i]["summary"]['after_filtering']['q30_rate']
+				merged_result_dict[key2] = {'total_reads' : result_dict[child]["summary"]['after_filtering']['total_reads'],
+                                            'total_bases' : result_dict[child]["summary"]['after_filtering']['total_bases'],
+                                            'q20_rate' : result_dict[child]["summary"]['after_filtering']['q20_rate'],
+                                            'q30_rate' : result_dict[child]["summary"]['after_filtering']['q30_rate']
 										   }
 							 
 	df = pd.DataFrame(merge_result_dict).T
