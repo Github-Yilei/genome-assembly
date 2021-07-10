@@ -52,8 +52,8 @@ if __name__=='__main__':
 						dest = "output", 
 						help = 'The result file in csv format')
 	if len(sys.argv) <= 1:
-        parser.print_help()
-        sys.exit()
+        	parser.print_help()
+        	sys.exit()
 	args = parser.parse_args()
     
 	parse_fastp_json(args)	
