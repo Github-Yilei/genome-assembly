@@ -39,7 +39,7 @@ def parse_fastp_json(args):
                                             'q30_rate' : result_dict[child]["summary"]['after_filtering']['q30_rate']
 										   }
 							 
-	df = pd.DataFrame(merge_result_dict).T
+	df = pd.DataFrame(merged_result_dict).T
 	df.to_csv(args.output, index = True, header = True)
 	
 	
