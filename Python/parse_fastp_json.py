@@ -14,10 +14,11 @@ import argparse
 from pathlib import Path
 import json
 
-result_dict = {}
-merged_result_dict = {}
+
 
 def parse_fastp_json(args):
+	result_dict = {}
+	merged_result_dict = {}
 	p = Path(args.input_path)
 	for child in p.iterdir():
 		if child.name.endswith('json'):
