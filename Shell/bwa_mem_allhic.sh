@@ -9,7 +9,7 @@ perl gmap2AlleleTable.pl ref_gene.gff3
 # filtering sam
 ~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl bwa_mem.sam draft.asm.fasta MBOI
 ~/miniconda3/bin/samtools view -t -b bwa_mem.REduced.paired_only.bam > sampe.clean.sam
-~/miniconda3/bin/samtools view -b -t draft.asm.fasta.fai sample.clean.sam > sample.clean.bam
+~/miniconda3/bin/samtools view -b -t draft.asm.fasta.fai sampe.clean.sam > sampe.clean.bam
 
 # Partition
 ~/biosoft/ALLHiC/bin/ALLHiC_partition -b sampe.clean.bam -r draft.asm.fasta -e AAGCTT -k 9 
@@ -28,7 +28,7 @@ done
 
 # plot
 ~/miniconda3/bin/samtools faidx groups.asm.fasta
-cut -f 1,2 groups.asm.fasta.fai  >chrn.list
+cut -f1,2 groups.asm.fasta.fai|grep sample > chrn.list
 
 ~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.bwa_mem.REduced.paired_only.bam groups.agp chrn.list 500k pdf
 ~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.clean.bam groups.agp chrn.list 500k pdf
