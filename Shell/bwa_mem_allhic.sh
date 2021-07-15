@@ -1,8 +1,4 @@
 #!/bin/bash
-grep ^@ sampe_part1_aln.sam >head
-ls | grep aln.sam | while read id; do grep -v ^@ $id ; done > combined.sam
-cat head combined.sam > combined_aln.sam\
-rm head combined.sam
 
 ### index reference genome
 ~/biosoft/bwa/bwa index draft.asm.fasta 
@@ -18,8 +14,8 @@ perl gmap2AlleleTable.pl ref_gene.gff3
 
 ### filtering sam
 ~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl bwa_mem.sam draft.asm.fasta HINDIII
-~/miniconda3/bin/samtools view -t -b -@ 10 bwa_mem.REduced.paired_only.bam > sampe.clean.sam
-~/miniconda3/bin/samtools view -b -t -@ 10 draft.asm.fasta.fai sampe.clean.sam > sampe.clean.bam
+~/miniconda3/bin/samtools view -t -b -@ 10 bwa_mem.REduced.paired_only.bam -o sampe.clean.sam
+~/miniconda3/bin/samtools view -b -t draft.asm.fasta.fai sampe.clean.sam -o sampe.clean.bam
 
 ### Prune	
 ~/biosoft/ALLHiC/bin/ALLHiC_prune -i Allele.ctg.table -b sampe.clean.bam -r draft.asm.fasta
