@@ -5,7 +5,7 @@
 ~/miniconda3/bin/samtools faidx draft.asm.fasta 
 
 ### bwa mem
-~/biosoft/bwa/bwa mem -5SP -t 10 draft.asm.fasta HiC1_R1.fastq.gz HiC1_R2.fastq.gz -o bwa_mem.sam 
+~/biosoft/bwa/bwa mem -5SP -t 10 draft.asm.fasta HiC_R1.fastq.gz HiC_R2.fastq.gz -o bwa_mem.sam 
 
 ### building atg_tabel
 ~/miniconda3/envs/allhic_env/bin/gmap_build -D . -d DB draft.asm.fasta 
@@ -40,6 +40,6 @@ done
 
 ### plot
 ~/miniconda3/bin/samtools faidx groups.asm.fasta
-cut -f1,2 groups.asm.fasta.fai| grep AAGCTT > chrn.list
+cut -f1,2 groups.asm.fasta.fai| grep 'AAGCTT' > chrn.list
 
 ~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.clean.bam groups.agp chrn.list 500k pdf
