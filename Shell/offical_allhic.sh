@@ -1,5 +1,3 @@
-test3 PreprocessSAMs.pl
-
 #!/bin/bash
 
 usage()
@@ -89,20 +87,21 @@ ln -s ${R2} ./Lib_R2.fastq.gz
 ~/miniconda3/bin/samtools faidx seq.HiCcorrected.fasta
 ~/biosoft/bwa/bwa mem -t $threads seq.HiCcorrected.fasta Lib_R1.fastq.gz Lib_R2.fastq.gz \
      | ~/miniconda3/bin/samtools view -hF 256 - \
-     | ~/miniconda3/bin/samtools sort -@ $threads -o sample.bwa_mem.bam -T tmp.ali
+     | ~/miniconda3/bin/samtools sort -@ $threads -o sampe.bwa_mem.bam -T tmp.ali
 
 
 ### filter bam
-~/miniconda3/bin/samtools view -bq 40 sample.bwa_mem.bam  |~/miniconda3/bin/samtools view -bt seq.HiCcorrected.fasta.fai > sample.unique.bam
-~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl sample.unique.bam seq.HiCcorrected.fasta $enzyme
+~/miniconda3/bin/samtools view -bq 40 sampe.bwa_mem.bam  |~/miniconda3/bin/samtools view -bt seq.HiCcorrected.fasta.fai > sampe.unique.bam
+~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl sampe.unique.bam seq.HiCcorrected.fasta $enzyme
 
 ### partition
-~/biosoft/ALLHiC/bin/ALLHiC_partition -r seq.HiCcorrected.fasta -e $enzyme -k $group_count -b sample.unique.REduced.paired_only.bam
+~/biosoft/ALLHiC/bin/ALLHiC_partition -r seq.HiCcorrected.fasta -e $enzyme -k $group_count -b sampe.unique.REduced.paired_only.bam
 
 ### optimize
 rm cmd.list
 for((K=1;K<=$group_count;K++))
-do echo "~/biosoft/ALLHiC/bin/allhic optimize sample.unique.REduced.paired_only.counts_${enzyme}.${group_count}g${K}.txt sample.unique.REduced.paired_only.clm" >> cmd.list
+do 
+echo "~/biosoft/ALLHiC/bin/allhic optimize sampe.unique.REduced.paired_only.counts_${enzyme}.${group_count}g${K}.txt sampe.unique.REduced.paired_only.clm" >> cmd.list
 done
 ~/miniconda3/pkgs/parafly-r2013_01_21-1/bin/ParaFly -c cmd.list -CPU $group_count
 
@@ -111,5 +110,5 @@ done
 
 ### plot
 ~/miniconda3/bin/samtools faidx groups.asm.fasta
-cut -f1,2 groups.asm.fasta.fai|grep sample > chrn.list
-~/biosoft/ALLHiC/bin/ALLHiC_plot sample.bwa_mem.bam groups.agp chrn.list $bin_size pdf
+cut -f1,2 groups.asm.fasta.fai|grep sampe > chrn.list
+~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.bwa_mem.bam groups.agp chrn.list $bin_size pdf
