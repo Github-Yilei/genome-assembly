@@ -11,14 +11,18 @@
 ~/miniconda3/bin/samtools view -t -b -@ 10 bwa_mem.REduced.paired_only.bam > sampe.clean.sam
 ~/miniconda3/bin/samtools view -b -t -@ 10 draft.asm.fasta.fai sampe.clean.sam > sampe.clean.bam
 
-# Partition
-~/biosoft/ALLHiC/bin/ALLHiC_partition -b sampe.clean.bam -r draft.asm.fasta -e AAGCTT -k 9 
+### Prune	
+~/biosoft/ALLHiC/bin/ALLHiC_prune -i Allele.ctg.table -b sampe.clean.bam -r draft.asm.fasta
 
-# Optimize 
-~/biosoft/ALLHiC/bin/allhic extract sampe.clean.bam draft.asm.fasta --RE AAGCTT
+### Partition
+~/biosoft/ALLHiC/bin/ALLHiC_partition -b prunning.bam -r draft.asm.fasta -e AAGCTT -k 9
 
+### Rescue
+~/biosoft/ALLHiC/bin/ALLHiC_rescue -b sampe.clean.bam -r draft.asm.fasta -c clusters.txt -i counts_RE.txt 
 
 ### optimize
+~/biosoft/ALLHiC/bin/allhic extract sampe.clean.bam draft.asm.fasta --RE AAGCTT
+
 rm cmd.list
 for((K=1;K<=9;K++))
 do echo "~/biosoft/ALLHiC/bin/allhic optimize sampe.clean.counts_AAGCTT.9g${K}.txt sampe.clean.clm" >> cmd.list
