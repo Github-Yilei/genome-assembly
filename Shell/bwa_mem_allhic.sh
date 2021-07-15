@@ -1,4 +1,8 @@
 #!/bin/bash
+grep ^@ sampe_part1_aln.sam >head
+ls | grep aln.sam | while read id; do grep -v ^@ $id ; done > combined.sam
+cat head combined.sam > combined_aln.sam\
+rm head combined.sam
 
 ### index reference genome
 ~/biosoft/bwa/bwa index draft.asm.fasta 
