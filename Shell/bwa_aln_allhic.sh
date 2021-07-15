@@ -1,10 +1,8 @@
 ### Filtering SAM
-rm cmd.list
-for((P=1;P<=8;P++))
-do
-echo "~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl sampe_part${P}_aln.sam draft.asm.fasta HINDIII" >> cmd.list
-done
-~/miniconda3/pkgs/parafly-r2013_01_21-1/bin/ParaFly -c cmd.list -CPU  8
+#for((P=1;P<=8;P++))
+#do
+#~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl sampe_part${P}_aln.sam draft.asm.fasta HINDIII
+#done
 
 rm cmd.list
 for((P=1;P<=8;P++))
@@ -30,7 +28,7 @@ done
 ~/biosoft/ALLHiC/bin/ALLHiC_partition -b prunning.bam -r draft.asm.fasta -e AAGCTT -k 9
 
 ### Rescue
-~/biosoft/ALLHiC/bin/ALLHiC_rescue -b sample.clean.bam -r draft.asm.fasta -c clusters.txt -i counts_RE.txt 
+~/biosoft/ALLHiC/bin/ALLHiC_rescue -b sampe.clean.bam -r draft.asm.fasta -c clusters.txt -i counts_RE.txt 
 
 ### optimize
 ~/biosoft/ALLHiC/bin/allhic extract sampe.clean.bam draft.asm.fasta --RE AAGCTT
