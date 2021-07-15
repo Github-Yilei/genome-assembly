@@ -1,8 +1,9 @@
+### combine SAM
+
+
 ### Filtering SAM
-#for((P=1;P<=8;P++))
-#do
-#~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl sampe_part${P}_aln.sam draft.asm.fasta HINDIII
-#done
+~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl sampe_part${P}_aln.sam draft.asm.fasta HINDIII
+
 
 rm cmd.list
 for((P=1;P<=8;P++))
