@@ -1,12 +1,18 @@
 #!/bin/bash
+
+### index reference genome
+~/biosoft/bwa/bwa index draft.asm.fasta 
 ~/miniconda3/bin/samtools faidx draft.asm.fasta 
 
-# building atg_tabel
-#~/miniconda3/envs/allhic_env/bin/gmap_build -D . -d DB draft.asm.fasta 
-#~/miniconda3/envs/allhic_env/bin/gmap -D . -d DB -t 12 -f 2 -n 2 reference.cds.fasta > gmap.gff3
-#perl gmap2AlleleTable.pl ref_gene.gff3
+### bwa mem
+~/biosoft/bwa/bwa mem -5SP -t 10 draft.asm.fasta HiC1_R1.fastq.gz HiC1_R2.fastq.gz -o bwa_mem.sam 
 
-# filtering sam
+### building atg_tabel
+~/miniconda3/envs/allhic_env/bin/gmap_build -D . -d DB draft.asm.fasta 
+~/miniconda3/envs/allhic_env/bin/gmap -D . -d DB -t 12 -f 2 -n 2 reference.cds.fasta > gmap.gff3
+perl gmap2AlleleTable.pl ref_gene.gff3
+
+### filtering sam
 ~/biosoft/ALLHiC/scripts/PreprocessSAMs.pl bwa_mem.sam draft.asm.fasta HINDIII
 ~/miniconda3/bin/samtools view -t -b -@ 10 bwa_mem.REduced.paired_only.bam > sampe.clean.sam
 ~/miniconda3/bin/samtools view -b -t -@ 10 draft.asm.fasta.fai sampe.clean.sam > sampe.clean.bam
@@ -29,10 +35,10 @@ do echo "~/biosoft/ALLHiC/bin/allhic optimize sampe.clean.counts_AAGCTT.9g${K}.t
 done
 ~/miniconda3/pkgs/parafly-r2013_01_21-1/bin/ParaFly -c cmd.list -CPU  9
 
-# Build
+### Build
 ~/biosoft/ALLHiC/bin/ALLHiC_build draft.asm.fasta
 
-# plot
+### plot
 ~/miniconda3/bin/samtools faidx groups.asm.fasta
 cut -f1,2 groups.asm.fasta.fai| grep AAGCTT > chrn.list
 
