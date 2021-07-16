@@ -120,6 +120,9 @@ For the total kmer number for gce option "-g", and the depth frequency file for 
 ~/biosoft/gce-1.0.0/gce -g `value of code 1` -f prefix.kmer.freq.stat.2colum -c 75 -H 1 >gce2.table 2>gce2.log
 ```
 
+### genomescope
+http://qb.cshl.edu/genomescope/
+
 ## Removing mitochondrion and chloroplast genome
 mitochondrion and chloroplast genomes were downloaded from the NCBI database and these sequences were used to find read sequences which are similar to the PacBio reads by using GMAP or minimap2 aligner at default setting.
 
@@ -204,7 +207,7 @@ prefix=species_name
 	# gnuplotTested=true \
 	  maxThreads=20 \
 	  genomeSize=<number>[g|m|k] \
-	 -pacbio-raw PacBio.fastq.gz
+	 -pacbio-raw PacBio.fastq.gz  useGrid=false
 
 # for heterozygous genomes
 # built a polyploid pipeline
@@ -223,6 +226,8 @@ prefix=species_name
 
 it is essential that using purge_dups to remove duplication after canu assembley.
 
+https://github.com/marbl/canu/issues/1814
+
 **Data：**
 
 - PacBio RS II reads：PacBio.fastq.gz
@@ -238,13 +243,15 @@ prefix=species_name
 # pbcstat
 ~/biosoft/purge_dups/bin/pbcstat *.paf.gz #(produces PB.base.cov and PB.stat files)
 ~/biosoft/purge_dups/bin/calcuts PB.stat > cutoffs 2>calcults.log
+~/biosoft/purge_dups/bin/calcuts calcuts -l36 -m40 -u240 PB.stat> cutoffs 2>calcults.log
 
 # step a2.Split an assembly and do a self-self alignment
 ~/biosoft/purge_dups/bin/split_fa ${prefix}.contigs.fasta > ${prefix}_split
 ~/biosoft/quast-5.0.2/quast_libs/minimap2/minimap2 -xasm5 -DP ${prefix}_split ${prefix}_split | gzip -c - > ${prefix}.split.self.paf.gz
+ python3 ~/biosoft/purge_dups/scripts/hist_plot.py -c cutoffs PB.stat PB.cov.png
 
 # step 2 Purge haplotigs and overlaps
-~/biosoft/purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov  ${prefix}.split.self.paf.gz > dups.bed 2> purge_dups.log
+~/biosoft/purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov ${prefix}.split.self.paf.gz > dups.bed 2> purge_dups.log
 
 # step 3 remove haplotypic duplications
 ~/biosoft/purge_dups/bin/get_seqs dups.bed ${prefix}.contigs.fasta 
@@ -266,6 +273,16 @@ done > ./temp/total.fasta
 
 ~/biosoft/quast-5.0.2/quast.py -t 20 -o quast_out purged.fa
 ```
+
+
+### khaper
+# Illumina
+# https://github.com/lardo/khaper
+~/biosoft/khaper/Bin/Graph.pl pipe -i fq.lst -m 2 -k 15 -s 1,3 -d Kmer_15
+
+### busco
+nohup ~/miniconda3/envs/busco/bin/busco  -m genome -i purged.fa -l /share/home/stu_wuyilei/project/Geome_assembel/kiwi/5_evaluate_quality/embryophyta_odb10 -o busco_out -c 5  --offline &
+
 
 ## Fillling gaps
 
