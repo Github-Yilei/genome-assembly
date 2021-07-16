@@ -23,7 +23,9 @@ perl gmap2AlleleTable.pl ref_gene.gff3
 ### Partition
 ~/biosoft/ALLHiC/bin/ALLHiC_partition -b prunning.bam -r draft.asm.fasta -e AAGCTT -k 9
 
+
 ### Rescue
+~/biosoft/ALLHiC/bin/allhic extract prunning.bam draft.asm.fasta --RE AAGCTT
 ~/biosoft/ALLHiC/bin/ALLHiC_rescue -b sampe.clean.bam -r draft.asm.fasta -c clusters.txt -i counts_RE.txt 
 
 ### optimize
