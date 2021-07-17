@@ -121,6 +121,7 @@ For the total kmer number for gce option "-g", and the depth frequency file for 
 ```
 
 ### genomescope
+
 http://qb.cshl.edu/genomescope/
 
 ## Removing mitochondrion and chloroplast genome
@@ -281,9 +282,15 @@ done > ./temp/total.fasta
 ~/biosoft/khaper/Bin/Graph.pl pipe -i fq.lst -m 2 -k 15 -s 1,3 -d Kmer_15
 
 ### busco
+
+```
 nohup ~/miniconda3/envs/busco/bin/busco  -m genome -i purged.fa -l /share/home/stu_wuyilei/project/Geome_assembel/kiwi/5_evaluate_quality/embryophyta_odb10 -o busco_out -c 5  --offline &
 
-
+mkdir summaries
+ln -s short_summary_prefix.txt summaries
+python ~/miniconda3/envs/busco/bin/generate_plot.py –wd my_summaries  --no_r
+# manually editting R scripts
+```
 ## Fillling gaps
 
 HERA is a local assembly tool using assembled contigs and self-corrected long reads as input to resolves repeats efficiently by constructing a connection graph from an overlap graph and filling gaps.
