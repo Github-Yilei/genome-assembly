@@ -5,7 +5,8 @@
 ~/miniconda3/bin/samtools faidx draft.asm.fasta 
 
 ### bwa mem
-~/biosoft/bwa/bwa mem -5SP -t 10 draft.asm.fasta HiC_R1.fastq.gz HiC_R2.fastq.gz -o bwa_mem.sam 
+# -5SP
+~/biosoft/bwa/bwa mem -t 10 draft.asm.fasta HiC_R1.fastq.gz HiC_R2.fastq.gz -o bwa_mem.sam 
 
 ### building atg_tabel
 ~/miniconda3/envs/allhic_env/bin/gmap_build -D . -d DB draft.asm.fasta 
@@ -25,8 +26,9 @@ perl gmap2AlleleTable.pl ref_gene.gff3
 
 
 ### Rescue
-~/biosoft/ALLHiC/bin/allhic extract prunning.bam draft.asm.fasta --RE AAGCTT
-~/biosoft/ALLHiC/bin/ALLHiC_rescue -b sampe.clean.bam -r draft.asm.fasta -c clusters.txt -i counts_RE.txt 
+~/biosoft/ALLHiC/bin/ALLHiC_rescue -b sampe.clean.bam -r draft.asm.fasta \
+        -c prunning.clusters.txt \
+        -i prunning.counts_AAGCTT.txt
 
 ### optimize
 ~/biosoft/ALLHiC/bin/allhic extract sampe.clean.bam draft.asm.fasta --RE AAGCTT
