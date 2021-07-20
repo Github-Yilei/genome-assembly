@@ -284,7 +284,7 @@ done > ./temp/total.fasta
 ### busco
 
 ```
-nohup ~/miniconda3/envs/busco/bin/busco  -m genome -i purged.fa -l /share/home/stu_wuyilei/project/Geome_assembel/kiwi/5_evaluate_quality/embryophyta_odb10 -o busco_out -c 5  --offline &
+nohup ~/miniconda3/envs/busco/bin/busco -m genome -l /share/home/stu_wuyilei/project/Geome_assembel/kiwi/5_evaluate_quality/embryophyta_odb10 -o busco_out -c 5 --offline  -i purged.fa &
 
 mkdir summaries
 ln -s short_summary_prefix.txt summaries
@@ -496,8 +496,8 @@ PreprocessSAMs.pl sampe.bwa_mem.sam draft.asm.fasta MBOI
 ~/biosoft/ALLHiC/bin/ALLHiC_prune -i Allele.ctg.table -b sampe.clean.bam -r draft.asm.fasta
 
 # Partition
-~/biosoft/ALLHiC/bin/ALLHiC_partition -b sampe.clean.bam -r draft.asm.fasta -e AAGCTT -k 29 
 ## -e and -k should be modified according result
+~/biosoft/ALLHiC/bin/ALLHiC_partition -b prunning.bam -r draft.asm.fasta -e AAGCTT -k 18
 
 # Rescue
 # allhic extract will build clusters.txt (-c) and counts_RE.txt (-i) 
