@@ -218,9 +218,6 @@ prefix=species_name
 	maxThreads=20 \
 	genomeSize=653m \
 	-pacbio-raw PacBio.fastq.gz
-  
-# evaluate assembley
-~/biosoft/quast-5.0.2/quast.py -t 20 -o quast_out ${prefix}.contigs.fasta
 ```
 
 ## Duplication 
@@ -240,22 +237,23 @@ prefix=species_name
 # step a1. align pacbio data to contigs
 ## For a large genome, setting minimap2 -I option
 ~/biosoft/quast-5.0.2/quast_libs/minimap2/minimap2 -t 20 -x map-pb ${prefix}.contigs.fasta PacBio.fastq.gz | gzip -c - > ${prefix}.paf.gz
+~/miniconda3/bin/minimap2 -x map-hifi -t 10 ${prefix}.contigs.fasta PacBio.fastq.gz --secondary=no -o ${prefix}.paf
 
 # pbcstat
 ~/biosoft/purge_dups/bin/pbcstat *.paf.gz #(produces PB.base.cov and PB.stat files)
 ~/biosoft/purge_dups/bin/calcuts PB.stat > cutoffs 2>calcults.log
-~/biosoft/purge_dups/bin/calcuts calcuts -l36 -m40 -u240 PB.stat> cutoffs 2>calcults.log
 
 # step a2.Split an assembly and do a self-self alignment
 ~/biosoft/purge_dups/bin/split_fa ${prefix}.contigs.fasta > ${prefix}_split
 ~/biosoft/quast-5.0.2/quast_libs/minimap2/minimap2 -xasm5 -DP ${prefix}_split ${prefix}_split | gzip -c - > ${prefix}.split.self.paf.gz
  python3 ~/biosoft/purge_dups/scripts/hist_plot.py -c cutoffs PB.stat PB.cov.png
+~/biosoft/purge_dups/bin/calcuts calcuts -l36 -m40 -u240 PB.stat> cutoffs 2>calcults.log
 
 # step 2 Purge haplotigs and overlaps
 ~/biosoft/purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov ${prefix}.split.self.paf.gz > dups.bed 2> purge_dups.log
 
 # step 3 remove haplotypic duplications
-~/biosoft/purge_dups/bin/get_seqs dups.bed ${prefix}.contigs.fasta 
+~/biosoft/purge_dups/bin/get_seqs -e dups.bed ${prefix}.contigs.fasta 
 
 # purged.fa：clean data
 # hap.fa：junk, haplotig, and duplication
@@ -468,64 +466,5 @@ After running the scripts above, two tables will be generated whose are Allele.g
 ### Perform AllHiC
 
 ```
-# build sample  links
-ln -s ../polish/pilon_out/pilon.fasta draft.asm.fasta
-ln -s ../kiwi_row_data/Hic/SRR9329820.1_1_hq.fastq.gz reads_R1.fastq.gz
-
-# build sample.bam
-## construct index
-~/biosoft/bwa/bwa index -a bwtsw draft.asm.fasta  
-~/miniconda3/bin/samtools faidx draft.asm.fasta  
-
-########################alegment
-##  alignment each fastq.gz file
-##  bwa mem has a good accuracy
-####### by mem #########
-~/biosoft/bwa/bwa mem -t 20  draft.asm.fasta reads_R1.fastq.gz reads_R2.fastq.gz > sampe.bwa_mem.sam
-
-## for bwa mem SAM
-PreprocessSAMs.pl sampe.bwa_mem.sam draft.asm.fasta MBOI
-~/miniconda3/bin/samtools view -t -b sampe.bwa_aln.REduced.paired_only.bam > sampe.clean.sam
-
-# combine the result of PreprocessSAMs.pl
-~/miniconda3/bin/samtools view -b -t draft.asm.fasta.fai sampe.clean.sam > sampe.clean.bam
-#########################
-
-
-# Prune
-~/biosoft/ALLHiC/bin/ALLHiC_prune -i Allele.ctg.table -b sampe.clean.bam -r draft.asm.fasta
-
-# Partition
-## -e and -k should be modified according result
-~/biosoft/ALLHiC/bin/ALLHiC_partition -b prunning.bam -r draft.asm.fasta -e AAGCTT -k 18
-
-# Rescue
-# allhic extract will build clusters.txt (-c) and counts_RE.txt (-i) 
-# ~/biosoft/ALLHiC/bin/allhic extract draft_pe_aln.bam draft.fasta --RE AAGCTT
-ALLHiC_rescue -b sampe.clean.bam -r draft.asm.fasta \
-    -c prunning.clusters.txt \
-    -i prunning.counts_AAGCTT.txt
-
-# Optimize 
-~/biosoft/ALLHiC/bin/allhic extract sampe.clean.bam draft.asm.fasta --RE AAGCTT 
-
-for i in group*.txt; 
-do
-allhic optimize $i sampe.clean.clm
-done
-
-# Build
-~/biosoft/ALLHiC/bin/ALLHiC_build draft.asm.fasta  
-# get groups.asm.fasta和groups.agp
-
-# Check groups.asm.fasta file
-
-# plot
-~/miniconda3/bin/samtools faidx groups.asm.fasta
-cut -f 1,2 groups.asm.fasta.fai  > chrn.list
-
-~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.bwa_mem.REduced.paired_only.bam groups.agp chrn.list 500k pdf
-
-~/biosoft/ALLHiC/bin/ALLHiC_plot sampe.clean.bam groups.agp chrn.list 500k pdf 
-
+nohup sh bwa_mem_allhic.sh &
 ```
