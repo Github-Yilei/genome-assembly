@@ -41,3 +41,15 @@ LTR_retriever/LAI -t 10 \
 # firts line is whole genome stats
 less groups.asm.fasta.mod.out.LAI
 ```
+
+## switch errors in the phased genome assembly
+
+A switch error indicates that a single base that is supposed to be present in one haplotype is incorrectly anchored onto another. This kind of assembly error is likely prevalent in the haplotype-resolved genome assembly.
+
+### SNP phasing for PacBio HiFi reads
+
+```
+~/miniconda3/bin/minimap2 -t 5 --secondary=no -ax map-hifi hap1_chrom.fa unmapped_combined_CCS.fq.gz -o hap1.sam 
+
+
+```
