@@ -46,7 +46,7 @@ less groups.asm.fasta.mod.out.LAI
 To investigate sequence divergence and evolutionary brelationships, we stringently aligned genome sequences with no gaps or indels allowed within an alignment block.
 
 ```
-Mummer=/share/home/stu_wuyilei/biosoft/ppsPCP_file/mummer-4.0.0beta2
+Mummer=~/miniconda3/bin
 RequiredCPU=5
 
 
