@@ -42,6 +42,30 @@ LTR_retriever/LAI -t 10 \
 less groups.asm.fasta.mod.out.LAI
 ```
 
+## mummer SNPs
+To investigate sequence divergence and evolutionary brelationships, we stringently aligned genome sequences with no gaps or indels allowed within an alignment block.
+
+```
+Mummer=/share/home/stu_wuyilei/biosoft/ppsPCP_file/mummer-4.0.0beta2
+RequiredCPU=5
+
+
+${Mummer}/nucmer -p ${sampleID} -t ${RequiredCPU} reference.fa query.fa
+${Mummer}/delta-filter -1 -q -r  ref_qry.delta > ref_qry_filtered.delta
+${Mummer}/show-coords ref_qry_filtered.delta > ref_qry_filtered.coords
+
+# dot plot
+mumer_dot.R
+
+# snp vcf
+${Mummer}/show-snps -C -T -l -r ref_qry_filtered.delta > ref_qry_filtered.snps
+python3 mummer2vcf.py --input-header -s ref_qry_filtered.snp -g reference.fa --output-header > qry_snp.vcf
+
+python3 SNP_calculater.py 
+```
+
+
+
 ## switch errors in the phased genome assembly
 
 A switch error indicates that a single base that is supposed to be present in one haplotype is incorrectly anchored onto another. This kind of assembly error is likely prevalent in the haplotype-resolved genome assembly.
@@ -50,6 +74,5 @@ A switch error indicates that a single base that is supposed to be present in on
 
 ```
 ~/miniconda3/bin/minimap2 -t 5 --secondary=no -ax map-hifi hap1_chrom.fa unmapped_combined_CCS.fq.gz -o hap1.sam 
-
 
 ```
