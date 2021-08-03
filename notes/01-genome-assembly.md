@@ -232,21 +232,7 @@ https://github.com/marbl/canu/issues/1814
 - long contigs: ${prefix}.contigs.fasta
 
 ```
-########## step a1, a2 can Work in parallel #############
-prefix=species_name
-# step a1. align pacbio data to contigs
-## For a large genome, setting minimap2 -I option
-~/biosoft/quast-5.0.2/quast_libs/minimap2/minimap2 -t 20 -x map-pb ${prefix}.contigs.fasta PacBio.fastq.gz | gzip -c - > ${prefix}.paf.gz
-~/miniconda3/bin/minimap2 -x map-hifi -t 10 ${prefix}.contigs.fasta PacBio.fastq.gz --secondary=no -o ${prefix}.paf
-
-# pbcstat
-~/biosoft/purge_dups/bin/pbcstat *.paf.gz #(produces PB.base.cov and PB.stat files)
-~/biosoft/purge_dups/bin/calcuts PB.stat > cutoffs 2>calcults.log
-
-# step a2.Split an assembly and do a self-self alignment
-~/biosoft/purge_dups/bin/split_fa ${prefix}.contigs.fasta > ${prefix}_split
-~/biosoft/quast-5.0.2/quast_libs/minimap2/minimap2 -xasm5 -DP ${prefix}_split ${prefix}_split | gzip -c - > ${prefix}.split.self.paf.gz
- python3 ~/biosoft/purge_dups/scripts/hist_plot.py -c cutoffs PB.stat PB.cov.png
+########## Manual cutoffs #############
 ~/biosoft/purge_dups/bin/calcuts calcuts -l36 -m40 -u240 PB.stat> cutoffs 2>calcults.log
 
 # step 2 Purge haplotigs and overlaps
@@ -275,8 +261,8 @@ done > ./temp/total.fasta
 
 
 ### khaper
-# Illumina
-# https://github.com/lardo/khaper
+
+https://github.com/lardo/khaper
 ~/biosoft/khaper/Bin/Graph.pl pipe -i fq.lst -m 2 -k 15 -s 1,3 -d Kmer_15
 
 ### busco
