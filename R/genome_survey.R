@@ -41,7 +41,8 @@ ggplot(data = kmer_count) + geom_point(aes(x = depth, y = freq))+
 # genome size
 ## The 1st or 2ed point might be error peaks that can be removed .
 Knum <- sum(kmer_count$sum[3:nrow(kmer_count)])
-Kdepth <- which(kmer_count[,3] == max(kmer_count[c(3:1000), 3]))
+# Kdepth <- which(kmer_count[,3] == max(kmer_count[c(3:1000), 3]))
+Kdepth <- kmer_count[which(kmer_count[,4] == max(kmer_count[c(3:1000), 4])), 1]
 genome_size <-  Knum/Kdepth/1000000
 print(genome_size)
 
