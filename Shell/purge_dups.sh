@@ -27,7 +27,7 @@ done
 python3 ~/biosoft/purge_dups/scripts/hist_plot.py -c cutoffs PB.stat PB.cov.png
 
 # step a2.Split an assembly and do a self-self alignment
-~/biosoft/purge_dups/bin/split_fa $1 > ${prefix}_split
+~/biosoft/purge_dups/bin/split_fa ${ref} > ${prefix}_split
 ~/biosoft/quast-5.0.2/quast_libs/minimap2/minimap2 -xasm5 -DP ${prefix}_split ${prefix}_split | gzip -c - > ${prefix}.split.self.paf.gz
 
 # step 2 Purge haplotigs and overlaps
