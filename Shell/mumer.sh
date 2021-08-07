@@ -4,7 +4,7 @@ RequiredCPU=5
 
 ${Mummer}/nucmer -p ${sampleID} -t ${RequiredCPU} reference.fa query.fa
 ${Mummer}/delta-filter -1 -q -r  ref_qry.delta > ref_qry_filtered.delta
-${Mummer}/show-coords ref_qry_filtered.delta > ref_qry_filtered.coords
+${Mummer}/show-coords -q -r -T ref_qry_filtered.delta > ref_qry_filtered.coords
 
 # dot plot
 mumer_dot.R
