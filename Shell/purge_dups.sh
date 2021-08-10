@@ -39,5 +39,5 @@ python3 ~/biosoft/purge_dups/scripts/hist_plot.py -c cutoffs PB.stat PB.cov.png
 ~/biosoft/purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov ${prefix}.split.self.paf.gz > dups.bed 2> purge_dups.log
 
 # step 3 remove haplotypic duplications
-~/biosoft/purge_dups/bin/get_seqs -e dups.bed ${prefix}.contigs.fasta
+~/biosoft/purge_dups/bin/get_seqs -e dups.bed ${ref}
 
