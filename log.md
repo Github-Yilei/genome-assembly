@@ -3,3 +3,4 @@ c010	/share/home/stu_wuyilei/project/Geome_assembel/Papeda/03-PseudoChromosomes/
 
 /share/home/stu_wuyilei/project/Geome_assembel/Papeda/03-PseudoChromosomes/RNAseq
 /share/home/stu_wuyilei/project/Geome_assembel/Papeda/04-QualityEvaluation/Minimap/Canu.2.2.1
+/share/home/stu_wuyilei/project/Geome_assembel/Papeda/04-QualityEvaluation/RNAseq/Canu.2.1.1
