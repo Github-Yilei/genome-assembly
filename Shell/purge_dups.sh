@@ -3,6 +3,9 @@
 usage()
 {
         echo "   Usage: `basename $0` -r draft.asm.fa -p draft -h hifi.fq"
+        echo "   -r reference genome "
+        echo "   -p output PAF to FILE"
+        echo "   -h PacBio HiFi reads"
         exit 0
 }
 
