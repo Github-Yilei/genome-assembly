@@ -1,37 +1,58 @@
 #!/bin/bash
 #PBS -N FastpQC
-#PBS -o QsubLog/FastpLog/
-#PBS -e QsubLog/FastpLog/
+#PBS -o Fastp.log
+#PBS -e Fastp.err
 #PBS -q workq
-#PBS -l nodes=1:ppn=30
+#PBS -l nodes=1:ppn=3
 #PBS -A YiLei
 
 ################################
 ### Variable information ###
-Species=Species_name
-sampleID=reads_prefix
+ProjectDir=Source_data/RNAseq
 
 ################################
 ### Project information ###
-ProjectDir=/share/home/stu_wuyilei/project/Genome_assembly/${Species}
-RawReads=${ProjectDir}/Source_data/Illumina/Raw
+RawReads=${ProjectDir}/Data
+SampleList=${ProjectDir}/sampleList.txt
 
-RawFastQC=${ProjectDir}/Source_data/Illumina/RawFastQC
-CleanFastQC=${ProjectDir}/Source_data/Illumina/CleanFastQC
-CleanReads=${ProjectDir}/Source_data/Illumina/Cleaned
-FastpDir=${ProjectDir}/Source_data/Illumina/FastpDir
+RawFastQC=${ProjectDir}/RawFastQC
+CleanFastQC=${ProjectDir}/CleanFastQC
+CleanReads=${ProjectDir}/Cleaned
+FastpDir=${ProjectDir}/FastpDir
 
-PBSLog=${ProjectDir}/workflow/QsubLog/FastpLog
-FastpLog=${Log}/Source_data/Illumina/FastpLog
+FastpLog=${ProjectDir}/FastpLog
+
+################################
+### Build directory ###
+function DirExists(){
+        if [ ! -d $1 ]
+        then
+                mkdir -p $1
+        fi
+}
+
+for i in ${RawFastQC} ${CleanFastQC} ${CleanReads} ${FastpDir} ${FastpLog}
+do
+        DirExists $i
+done
+
+echo ${RawFastQC} ...OK
+echo ${CleanFastQC} ...OK
+echo ${CleanReads} ...OK
+echo ${FastpDir} ...OK
+echo ${FastpLog} ...OK
 
 ################################
 ### Tools ###
 Fastp=/share/home/stu_wuyilei/miniconda3/bin/fastp
 Fastqc=/share/home/stu_wuyilei/biosoft/FastQC/fastqc
- 
+
 ################################
 ### Main parameters ###
-RequiredCPU=30
+RequiredCPU=3
+
+IFS=$'\r\n' GLOBIGNORE='*' command eval  'ARRAY=($(cat $SampleList))'
+sampleID=`echo ${ARRAY[(($PBS_ARRAY_INDEX-1))]}`
 
 ################################
 ### Main process ###
@@ -43,8 +64,8 @@ echo Fastqc for raw reads finished with ${sampleID} at `date`
 
 ### Quality control ###
 ${Fastp} -i ${RawReads}/${sampleID}_1.fq.gz -I ${RawReads}/${sampleID}_2.fq.gz -o ${CleanReads}/${sampleID}_1.fq.gz \
-	-O ${CleanReads}/${sampleID}_2.fq.gz -W 5 -M 20 -5 -3 -l 50 -z 6 -w ${RequiredCPU} \
-	-j ${FastpDir}/${sampleID}.json -h ${FastpDir}/${sampleID}.html > ${FastpLog}/${sampleID}.qc.log 2>&1
+        -O ${CleanReads}/${sampleID}_2.fq.gz -w ${RequiredCPU} \
+        -j ${FastpDir}/${sampleID}.json -h ${FastpDir}/${sampleID}.html > ${FastpLog}/${sampleID}.qc.log 2>&1
 echo fastp finished with ${sampleID} at `date`
 
 ### Fastqc for clean reads ###
