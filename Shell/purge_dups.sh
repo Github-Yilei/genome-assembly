@@ -2,24 +2,26 @@
 
 usage()
 {
-	echo "   Usage: `basename $0` -r draft.asm.fa -p draft"
-	exit 0
+        echo "   Usage: `basename $0` -r draft.asm.fa -p draft -h hifi.fq"
+        exit 0
 }
 
 ### get options
-while getopts ':r:p:' OPT; do
-	case $OPT in
-		r)
-			ref="$OPTARG";;
-		p)
-			prefix="$OPTARG";;
-		?)
-			usage;;
-	esac
+while getopts ':r:p:h:' OPT; do
+        case $OPT in
+                r)
+                        ref="$OPTARG";;
+                p)
+                        prefix="$OPTARG";;
+                h)
+                        hifi="$OPTARG";;
+                ?)
+                        usage;;
+        esac
 done
 
 # minimap mapping
-~/miniconda3/bin/minimap2 -x map-hifi -t 10 ${ref} hifi.fq -o ${prefix}.paf
+~/miniconda3/bin/minimap2 -x map-hifi -t 40 ${ref} ${hifi} -o ${prefix}.paf
 
 # pbcstat
 ~/biosoft/purge_dups/bin/pbcstat *.paf
@@ -34,4 +36,5 @@ python3 ~/biosoft/purge_dups/scripts/hist_plot.py -c cutoffs PB.stat PB.cov.png
 ~/biosoft/purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov ${prefix}.split.self.paf.gz > dups.bed 2> purge_dups.log
 
 # step 3 remove haplotypic duplications
-~/biosoft/purge_dups/bin/get_seqs -e dups.bed ${prefix}.contigs.fasta 
+~/biosoft/purge_dups/bin/get_seqs -e dups.bed ${prefix}.contigs.fasta
+
