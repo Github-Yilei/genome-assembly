@@ -299,3 +299,98 @@ cat Trinity.fasta Trinity.GG.fasta > transcripts.fasta
 ```
 
 [SQLite database is locked](https://github.com/PASApipeline/PASApipeline/issues/74): --CPU 1
+
+## Filter sequence
+
+过滤出长度不足50AA的序列，基于这些序列过滤原来的的注释
+
+```bash
+~/miniconda3/envs/cufflinks_env/bin/gffread EVM.all.gff3 -g groups.asm.fasta -y tr_cds.fa
+
+~/miniconda3/bin/bioawk -c fastx 'length($seq)<50 {print $name}' tr_cds.fa | cut -d '=' -f 2 > short_aa_gene_list.txt
+
+grep -v -w -f short_aa_gene_list.txt  EVM.all.gff3 > filter.gff
+```
+
+## Statistics
+
+### 1. avarage length
+
+```bash
+cat EVM_exon.gff3 | awk '{length += ($5 - $4)} END { print "average = " length/NR}'
+```
+
+## Setting genome order
+
+python gffrename.py  EVM_output.gff  prefix  > renamed.gff
+
+最好进行编号改变
+
+```bash
+#!/usr/bin/env python3
+import re
+import sys
+
+if len(sys.argv) < 3:
+    sys.exit()
+
+gff = open(sys.argv[1])
+prf = sys.argv[2]
+
+count = 0
+mRNA  = 0
+cds   = 0
+exon  = 0
+
+print("##gff-version 3.2.1")
+for line in gff:
+    if not line.startswith("\n"):
+        records = line.split("\t")
+        records[1] = "."
+    if re.search(r"\tgene\t", line):
+        count = count + 10
+        mRNA  = 0
+         chr_num = records[0]
+         # the number of the genes
+        gene_id = prf + chr_num + str(count).zfill(7) 
+        records[8] = "ID={}".format(gene_id)
+    elif re.search(r"\tmRNA\t", line):
+        cds   = 0
+        exon  = 0
+        mRNA  = mRNA + 1
+        mRNA_id    = gene_id + "." + str(mRNA)
+        records[8] = "ID={};Parent={}".format(mRNA_id, gene_id)
+    elif re.search(r"\texon\t", line):
+        exon     = exon + 1
+        exon_id  = mRNA_id + "_exon_" + str(exon)
+        records[8] = "ID={};Parent={}".format(exon_id, mRNA_id)
+    elif re.search(r"\tCDS\t", line):
+        cds     = cds + 1
+        cds_id  = mRNA_id + "_cds_" + str(cds)
+        records[8] = "ID={};Parent={}".format(cds_id, mRNA_id)
+    else:
+        continue
+
+    print("\t".join(records))
+
+gff.close()
+```
+
+## Cleanning row data
+
+```bash
+# fliter gff3 data - options
+~/miniconda3/bin/bioawk -c fastx 'length($seq)>50 {print ">"$name "\t"$comment; print $seq}' tr_cds.fa 
+
+
+conda activate cufflinks_env
+# extract protein sequence(automaticlly choose longest)
+~/miniconda3/envs/cufflinks_env/bin/gffread EVM.all.gff -g unmasked.fa -y tr_cds.fa
+# 提取CDS序列
+gffread EVM.all.gff -g unmasked.fa -x cds.fa
+# 获得外显子序列
+gffread EVM.all.gff -g unmasked.fa -w exons.fa
+
+# remove dot and duplicate >id id
+python remove_dot_Proteins.py kiwi_v1.protein.fa > clean_kiwi_v1.1.protein.fa
+```
