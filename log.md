@@ -1,6 +1,3 @@
-c005	/share/home/stu_wuyilei/project/Geome_assembel/Papeda/03-PseudoChromosomes/Hifi/P_ctg/Purged2/Gmap
-c010	/share/home/stu_wuyilei/project/Geome_assembel/Papeda/03-PseudoChromosomes/Hifi/P_ctg/Purged2
+c007  /share/home/stu_wuyilei/project/Geome_assembel/Papeda/02-Duplication/Homo_150/Hap1
+c005  /share/home/stu_wuyilei/project/Geome_assembel/Papeda/02-Duplication/Homo_150/Hap2
 
-/share/home/stu_wuyilei/project/Geome_assembel/Papeda/03-PseudoChromosomes/RNAseq
-/share/home/stu_wuyilei/project/Geome_assembel/Papeda/04-QualityEvaluation/Minimap/Canu.2.2.1
-/share/home/stu_wuyilei/project/Geome_assembel/Papeda/04-QualityEvaluation/RNAseq/Canu.2.1.1
