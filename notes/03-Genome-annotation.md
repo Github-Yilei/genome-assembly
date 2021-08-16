@@ -60,7 +60,10 @@ conda activate augustus_env
 find genome.fa.masked.split/ -type f -name "*.fa" | ~/miniconda3/pkgs/parallel-20170422-pl5.22.0_0/bin/parallel -j 30 augustus --species=arabidopsis --gff3=on >> temp.gff 
 
 # ID setting
-join_aug_pred.pl < temp.gff  | grep -v '^#' > temp.joined.gff
+ for i in {1..9};
+ do
+ cat chrom.fa.id_chr$i.masked.gff | perl ~/miniconda3/envs/augustus/bin/join_aug_pred.pl >> temp.joined.gff3;
+ done
 
 ~/miniconda3/bin/bedtools sort -i temp.joined.gff > augustsus.gff3
 ```
