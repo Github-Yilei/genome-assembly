@@ -120,7 +120,8 @@ draft.fa.masked \
 index/draft.fa.masked
 
 # alligment
-~/miniconda3/pkgs/hisat2-2.2.1-he1b5a44_2/bin/hisat2 --dta -p 20 -x index/groups.asm.fasta.masked -1 ../RNAseq${i}_1.fastq.gz -2 ../RNAseq{$i}_2.fastq.gz | ~/miniconda3/bin/samtools  sort -@ 10 > RNAseq{$i}.bam &
+~/miniconda3/pkgs/hisat2-2.2.1-he1b5a44_2/bin/hisat2 --dta -p 20 -x index/groups.asm.fasta.masked -1 RNAseq_1.fastq.gz -2 RNAseq_2.fastq.gz -S RNA.sam
+~/miniconda3/bin/samtools  sort -@ 10 RNAseq.sam -O BAM -o RNAseq.bam 
 
 # repeat it for every RNA pair reads
 hisat2 --dta -p 20 -x index/draft.fa.masked -1 RNAseq_2_R1.fq.gz -2 RNAseq_2_R1.fq.gz
