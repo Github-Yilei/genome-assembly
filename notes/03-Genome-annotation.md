@@ -54,15 +54,15 @@ mkdir 01-augustsus && cd 01-augustsus
 
 conda activate augustus
 # split genome
-~/miniconda3/bin/seqkit split -i genome.fa.masked 
+~/miniconda3/bin/seqkit split -i draft.fa.masked 
 
 # parallel working
 ls genome.fa.masked.split | while read name; 
 do 
-echo "~/miniconda3/envs/augustus/bin/augustus --species=arabidopsis --gff3=on --UTR=on genome.fa.masked.split/$name > $name.gff " >> cmd.list; 
+echo "~/miniconda3/envs/augustus/bin/augustus --species=arabidopsis --gff3=on --UTR=on draft.fa.masked.split/$name > $name.gff " >> cmd.list; 
 done
 
-cpu=`ls genome.fa.masked.split | wc -l `
+cpu=`ls draft.fa.masked.split | wc -l `
 ~/miniconda3/pkgs/parafly-r2013_01_21-1/bin/ParaFly -c cmd.list -CPU ${cpu}
 
 # ID setting
@@ -82,7 +82,7 @@ cpu=`ls genome.fa.masked.split | wc -l `
 mkdir 02-Gmes && cd 02-Gmes
 
 # prediction
-gmes_petap.pl --ES --sequence genome.fa.masked --cores 50
+gmes_petap.pl --ES --sequence draft.fa.masked --cores 50
 
 # transform genemark.gtf to .gff3
 perl genemark_gtf2gff3.pl genemark.gtf >tmp.genemark.gff3
@@ -92,39 +92,26 @@ perl genemark_gtf2gff3.pl genemark.gtf >tmp.genemark.gff3
 ```
 
 ### Genomethreader
-```
-mkdir 03-Genomethreader && cd 03-Genomethreader
-#!/bin/bash
-# tblastn
-~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/makeblastdb -in genome.fa.masked -parse_seqids -dbtype nucl -out genome.masked &
 
-~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/tblastn -query all.pep.fa -out all_pep.blast -db genome.masked -outfmt 6 -evalue 1e-5 -num_threads 20 -qcov_hsp_perc 50.0 -num_alignments 5
+```
+#!/bin/bash
+mkdir 03-Genomethreader && cd 03-Genomethreader
+
+# tblastn
+~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/makeblastdb -in draft.fa.masked -parse_seqids -dbtype nucl -out genome.db
+
+~/miniconda3/pkgs/blast-2.10.1-pl526he19e7b1_1/bin/tblastn -query all.pep.fa -out all_pep.blast -db genome.db -outfmt 6 -evalue 1e-5 -num_threads 20 -qcov_hsp_perc 50.0 -num_alignments 5
 
 # extract pprotein id
-awk '{print $1}' all_pep.blast > all_pep.list
-sort all_pep.list | uniq >unique_pep.list
+awk '{print $1}' all_pep.blast | sort | uniq >unique_pep.list
 
-# protein 单行显示
-~/miniconda3/bin/seqkit seq all.pep.fa -w 0 > all.fa
-
-# 提取匹配蛋白
-cat unique_pep.list | while read line;  do grep $line -A 1 all.fa ; done >unique_pep.fa
+# extact uniq protein 
+ ~/miniconda3/bin/seqkit grep -f unique_pep.list all.pep.fa -o seqkit_unique_pep.fa
 
 # homology prediction
-~/miniconda3/bin/gth -genomic groups.asm.fasta.masked -protein unique_pep.fa -intermediate -gff3out > gth_homology.gff
+~/miniconda3/bin/gth -genomic draft.fa.masked -protein unique_pep.fa -intermediate -gff3out -o gth_homology.gff 
 ```
-*Prepare tabel*
 
-1. 去掉#开头，去掉含"*prime_cis_splice_site"的行，去掉gene后面的Target
-2. 同基因组下外显子和内含子需要编号，便于识别。
-
-```
-# check types
-awk '!/^[#]/ {print $3}' gth_homology.gff | sort | uniq
-
-python genomeThreader_to_evm_gff3.py --input_file gth_homo.gff --output genomethreader.gff3
-
-```
 ### HISAT2 + StringTie
 
 ```
@@ -220,56 +207,53 @@ ln -s ../02-Gmes/genemark.gff3
 ln -s ../03-Genomethreader/genomethreader.gff3
 ln -s ../04-RNAbased/transdecoder.gff3
 ln -s ../05-PASA/database.sqlite.pasa_assemblies.gff3 PASA.gff3
+ln -s ../07-Update/compreh_init_build/compreh_init_build.gff3
 
 # set weights.txt according to /EVidenceModeler1/simple_example
 vim weights.txt
-## 第一列为来源类型：ABINITIO_PREDICTION, PROTEIN, TRANSCRIPT
-## 第二列对应着gff3文件第二列: augustsus, braker
-## 第三列为权重 我觉得根据基因组引导组装的ORF的可信度高于组装后比对，所以得分和PASA差不多一样高。从头预测权重一般都是1，但是BRAKER可信度稍微高一点，可以在2~5之间
-/share/home/stu_wuyilei/canu_1.6/9_anotation/05-evi/weights.txt
 
 # split data
 ~/miniconda3/envs/EVidenceModeler_env/opt/evidencemodeler-1.1.1/EvmUtils/partition_EVM_inputs.pl \
---genome ../../groups.asm.fasta \
---gene_predictions ../augustsus.gff3 \
---gene_predictions ../genemark.gff3 \
---protein_alignments ../gth_clean_homology.gff \
---transcript_alignments ../transcripts.fasta.transdecoder.genome.gff3 \
---pasaTerminalExons  ../database.sqlite.pasa_assemblies.gff3 \
---segmentSize 100000 \ # --segmentsSize = 基因平均长度加上2个标准差(or 10k)
---overlapSize 10000 \
---partition_listing partitions_list.out
-# 可以只运行一次，后面调整weight
+	--genome chrom.fa.masked \
+	--gene_predictions augustsus.gff3 \
+	--gene_predictions gmes.gff3 \
+	--protein_alignments genomethreader.gff3 \
+	--transcript_alignments transdecoder.gff3 \
+	--transcript_alignments  PASA.gff3 \
+	--transcript_alignments  compreh_init_build.gff3 \
+	--segmentSize 100000 \
+	--overlapSize 10000 \
+	--partition_listing partitions_list.out
 
-# build perform code 
---terminalExons ../database.sqlite.pasa_assemblies.gff3 \
-
+# build perform code
 ~/miniconda3/envs/EVidenceModeler_env/opt/evidencemodeler-1.1.1/EvmUtils/write_EVM_commands.pl \
---genome ../../groups.asm.fasta \
---weights ~/canu_1.6/9_anotation/06-evi/weights.txt \
---gene_predictions ../augustsus.gff3 \
---gene_predictions ../genemark.gff3 \
---protein_alignments ../gth_clean_homology.gff \
---transcript_alignments ../transcripts.fasta.transdecoder.genome.gff3 \
---output_file_name evm.out \
---partitions partitions_list.out >commands.list
+	--genome chrom.fa.masked \
+	--weights /share/home/stu_wuyilei/project/Geome_assembel/Papeda/05-GenomeAnnotation/06-EVM/weights.txt \
+	--gene_predictions augustsus.gff3 \
+	--gene_predictions gmes.gff3 \
+	--protein_alignments genomethreader.gff3 \
+	--transcript_alignments transdecoder.gff3 \
+	--transcript_alignments  PASA.gff3 \
+	--transcript_alignments  compreh_init_build.gff3 \
+	--output_file_name evm.out \
+	--partitions partitions_list.out >commands.list
 
 # running 
 ~/miniconda3/pkgs/parallel-20170422-pl5.22.0_0/bin/parallel --jobs 20 < commands.list
 
 # combine reslut 
 ~/miniconda3/envs/EVidenceModeler_env/opt/evidencemodeler-1.1.1/EvmUtils/recombine_EVM_partial_outputs.pl \
---partitions partitions_list.out \
---output_file_name evm.out
+	--partitions partitions_list.out \
+	--output_file_name evm.out
 
 # transform file to .gff3
 ~/miniconda3/envs/EVidenceModeler_env/opt/evidencemodeler-1.1.1/EvmUtils/convert_EVM_outputs_to_GFF3.pl  \
---partitions partitions_list.out \
---output evm.out  \
---genome ../../groups.asm.fasta 
+	--partitions partitions_list.out \
+	--output evm.out  \
+	--genome chrom.fa.masked
 
 # set name
-find . -regex ".*evm.out.gff3" -exec cat {} \; > EVM.all.gff3
+find . -regex ".*evm.out.gff3" -exec cat {} \; > EVidenceModeler_combined.gff3
 ```
 
 
