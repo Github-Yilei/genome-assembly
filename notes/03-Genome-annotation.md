@@ -109,7 +109,7 @@ awk '{print $1}' all_pep.blast | sort | uniq >unique_pep.list
  ~/miniconda3/bin/seqkit grep -f unique_pep.list all.pep.fa -o seqkit_unique_pep.fa
 
 # homology prediction
-~/miniconda3/bin/gth -genomic draft.fa.masked -protein unique_pep.fa -intermediate -gff3out -o gth_homology.gff 
+~/miniconda3/bin/gth -genomic draft.fa.masked -protein seqkit_unique_pep.fa -intermediate -gff3out -o gth_homology.gff 
 ```
 
 ### HISAT2 + StringTie
