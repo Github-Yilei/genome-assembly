@@ -1,9 +1,8 @@
 
-Mummer=~/miniconda3/bin/nucmer
-
-${Mummer}/nucmer -p ${sampleID} -t ${RequiredCPU} reference.fa query.fa
-${Mummer}/delta-filter -1 -q -r  ref_qry.delta > ref_qry_filtered.delta
-${Mummer}/show-coords -q -r -T -d -H -c ref_qry_filtered.delta > ref_qry_filtered.coords
+Mummer=~/miniconda3/bin
+${Mummer}/nucmer --mum -l 1000 -c 200 -g 200  -p hap2 monoploid.fa hap2.fa
+${Mummer}/delta-filter -1 -q -r hap2.delta > hap2_filtered.delta
+${Mummer}/show-coords -T -q -H -r hap2_filtered.delta > hap2_filtered.coords
 
 # dot plot
 #mumer_dot.R
