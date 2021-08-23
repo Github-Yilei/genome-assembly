@@ -3,7 +3,7 @@
 
 """
 @ Description: rename the IDs of the gff3 file from EVidenceModeler. if you want a 
-@ Usage: python modify_ID_of_EVM.py--input_file --prefix --output
+@ Usage: python gff3renamer.py --input_file PASA_update.gff3 --prefix "" --output  renamed.gff3
 @ Author: Yilei
 @ Date:2020-01-13
 """
@@ -12,7 +12,7 @@ import re
 import sys
 import argparse
 
-def modify_ID_of_EVM(args):
+def gff3renamer(args):
 	count = 0
 	mRNA  = 0
 	cds   = 0
@@ -64,4 +64,4 @@ if __name__=='__main__':
 		sys.exit()
 	args = parser.parse_args()
     
-	modify_ID_of_EVM(args)
+	gff3renamer(args)
