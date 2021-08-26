@@ -31,3 +31,6 @@ EVM： masked  genome获得的基因数目和平均长度均高
 
 
 
+Haplotype-resolved genome assembly provides
+insights into evolutionary history of the tea plant
+Camellia sinensis
