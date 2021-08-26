@@ -1,37 +1,33 @@
+rm commands.list  EVidenceModeler_combined.gff3 nohup.out
+nohup sh run.sh &
 
-# INFERNAL
-```
-# Format a CM database
-## Pressed and indexed XX CMs and XX HMM filters
-~/miniconda3/pkgs/infernal-1.1.3-h516909a_0/bin/cmpress Rfam.cm
-
-## For cmscan 
-CMmumber=`cat Rfam.cm | grep 'NAME'| sort | wc -l`
-##  Z = (Total ofresidues X 2 X ${CMmumber}/1,000,000)
+c001
+c002
+c003
+du ~/project/Geome_assembel/Papeda/05-GenomeAnnotation/Monoploid/Genomethreader/all_pep.blast	147456
+du ~/project/Geome_assembel/Papeda/05-GenomeAnnotation/Hap1/03-Genomethreader/all_pep.blast	263936
+du ~/project/Geome_assembel/Papeda/05-GenomeAnnotation/Hap2/03-Genomethreader/all_pep.blast	262144
 
 
-# NCBI code
-~/miniconda3/pkgs/infernal-1.1.3-h516909a_0/bin/cmscan -Z  --nohmmonly --cpu 20  --rfam --cut_ga --fmt 2 --oclan --oskip --clanin Rfam.clanin -o genome.cmscan.out --tblout genome.cmscan.tblout Rfam.cm genome.fa
 
-cmscan -Z 5.874406 --cut_ga --rfam --nohmmonly --tblout genome.tblout --fmt 2 --cpu 8 --clanin Rfam.clanin Rfam.cm genome.fa > genome.cmscan
-```
+unmasked： EVM合并、从头预测（gene数目和长度都增加了）
+augustsus：unmasked.fa的可以使最终结果的 gene数目和长度增加。
+EVM合并： masked.fa 可以使最终结果的 gene数目和长度增加。
 
-# run PASA
-```
-~/biosoft/PASApipeline/scripts/Launch_PASA_pipeline.pl \
-	-c alignAssembly.config -t transcripts.fasta \
-	-C -R -g chrom.fa.masked \
-	--ALIGNERS blat \
-	--CPU 2 --TDN tdn.accs --cufflinks_gtf cufflinks.gtf
-```
-## Genomethreader
-```
-~/biosoft/ppsPCP_file/ncbi-blast-2.11.0+/bin/tblastn -query all.pep.fa -out all_pep.blast -db masked -outfmt 6 -evalue 1e-5 -num_threads 20 -qcov_hsp_perc 50.0 -num_alignments 5
-```
 
-BLASTN-RNA
+Gmes: unmasked.fa 结果中，Monoploid gene数目和长度都增加了， 但hap 中的剧烈减少。所以统一用softmasked。
 
-```
-~/biosoft/ppsPCP_file/ncbi-blast-2.11.0+/bin/blastn -query ncRNA.fa -db chrom_db -out ncRNA.blast -outfmt 6 -evalue 1e-5
-```
+softmasked：蛋白质预测、转录本预测https://github.com/oushujun/EDTA/issues/166
+
+AUGUSTUS： parameter softmasking=1 is slightly more accurate than hard masking (with N's), which looses information. 
+
+
+
+EVM： masked  genome获得的基因数目和平均长度均高
+
+简单重复序列可以以很高的统计学显著性比对到蛋白质的低复杂性片段，从而造成假同源。
+复杂重复序列包含真正的蛋白质编码基因，会干扰从头预测过程。比如，gene predictor会将位于物种特异性蛋白质编码基因 内含子部分的转座元件误认为是该基因的一部分外显子。
+所以识别、标识基因组重复区域非常重要。
+
+
 
