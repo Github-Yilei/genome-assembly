@@ -15,7 +15,7 @@ augustsus：unmasked.fa的可以使最终结果的 gene数目和长度增加。
 EVM合并： masked.fa 可以使最终结果的 gene数目和长度增加。
 
 
-Gmes: unmasked.fa 结果中，Monoploid gene数目和长度都增加了， 但hap 中的剧烈减少。所以统一用softmasked。
+Gmes: unmasked.fa 结果中，Monoploid gene数目和长度都增加了， 但hap 中的剧烈减少。softmasked 长度和数量表现不如N maksed。
 
 softmasked：蛋白质预测、转录本预测https://github.com/oushujun/EDTA/issues/166
 
