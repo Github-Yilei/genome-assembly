@@ -54,22 +54,22 @@ mkdir 01-augustsus && cd 01-augustsus
 
 conda activate augustus
 # split genome
-~/miniconda3/bin/seqkit split -i draft.fa.masked 
+~/miniconda3/bin/seqkit split -i draft.fa.masked -O Split
 
 # parallel working
-ls genome.fa.masked.split | while read name; 
+ls Split | while read name; 
 do 
-echo "~/miniconda3/envs/augustus/bin/augustus --species=arabidopsis --gff3=on --UTR=on draft.fa.masked.split/$name > $name.gff " >> cmd.list; 
+echo "~/miniconda3/envs/augustus/bin/augustus --species=arabidopsis --gff3=on --softmasking=1 --UTR=on Split/${name} > ${name}.gff " >> cmd.list; 
 done
 
-cpu=`ls draft.fa.masked.split | wc -l `
+cpu=`ls Split | wc -l `
 ~/miniconda3/pkgs/parafly-r2013_01_21-1/bin/ParaFly -c cmd.list -CPU ${cpu}
 
 # ID setting
- for i in {1..9};
- do
- cat chr$i.masked.gff | perl ~/miniconda3/envs/augustus/bin/join_aug_pred.pl | grep -v '^#' >> temp.joined.gff;
- done
+ls Split | while read name; 
+do
+cat ${name}.gff | perl ~/miniconda3/envs/augustus/bin/join_aug_pred.pl | grep -v '^#' >> temp.joined.gff;
+done
 
 # sort gff
 ~/miniconda3/bin/bedtools sort -i temp.joined.gff > augustsus.gff3
