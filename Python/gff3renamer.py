@@ -17,6 +17,8 @@ def gff3renamer(args):
 	mRNA  = 0
 	cds   = 0
 	exon  = 0
+	UTR_5 = 0
+	UTR_3 = 0
 	prefix = args.prefix
 	with open(args.input_file, "r") as gff:
 		for line in gff:
@@ -26,6 +28,8 @@ def gff3renamer(args):
 			if re.search(r"\tgene\t", line):
 				count = count + 10
 				mRNA  = 0
+				UTR_5 = 0
+				UTR_3 = 0
 				gene_id = prefix + str(count).zfill(6)
 				records[8] = "ID={};Name={}".format(gene_id, gene_id)
 			elif re.search(r"\tmRNA\t", line):
@@ -42,6 +46,14 @@ def gff3renamer(args):
 				cds = cds + 1
 				cds_id  = mRNA_id + "_cds_" + str(cds)
 				records[8] = "ID={};Parent={};Name={}".format(cds_id, mRNA_id, cds_id)
+			elif re.search(r"\tfive_prime_UTR\t", line):
+				UTR_5 = UTR_5 + 1
+				UTR_5_id = gene_id + ".UTR_5." + str(UTR_5)
+				records[8] = "ID={};Parent={}".format(UTR_5_id, gene_id)
+			elif re.search(r"\tthree_prime_UTR\t", line):
+				UTR_3 = UTR_3 + 1
+				UTR_3_id = gene_id + ".UTR_3." + str(UTR_3)
+				records[8] = "ID={};Parent={}".format(UTR_3_id, gene_id)
 			else:
 				continue
 			with open(args.output, "a") as new_gff:
