@@ -12,10 +12,10 @@ import argparse
 
 def dot_remover(args):
 	gene_dict = {}
+	flag = ''
 	with open(args.input, 'r') as lines:
 		for line in lines:
 			if line.startswith('>'):
-				temp_line = ""
 				gene_id = line.strip('>\n').split('.')[0]
 				flag = gene_id
 				try:
@@ -25,13 +25,14 @@ def dot_remover(args):
 				else:
 					gene_dict[gene_id].append(line)
 			else:
-				line = line.strip("\n")
+				# adding sequence at the end of gene_id
 				gene_dict[flag][-1] += line
     # select the longest sequence
 	longest_seq = ""
 	for k,v in gene_dict.items():
 		if len(v) == 1:
-			longest_seq += gene_dict[k][0].strip('.') + "\n"
+			# the sequence are like "ABCD\nEFGH\n", and `strip` will only deal with the last "\n"
+			longest_seq += gene_dict[k][0].strip("\n").strip(".") + "\n"
 		else:
 			trans_max = ''
 			for trans in gene_dict[k]:
@@ -39,7 +40,7 @@ def dot_remover(args):
 				b = len(list(trans_max))
 				if a > b:
 					trans_max = trans
-				longest_seq += trans_max
+				longest_seq += trans_max.strip("\n").strip(".") + "\n"
 
 	with open(args.output, 'w') as longest:
 		longest.write(longest_seq)
