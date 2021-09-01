@@ -19,7 +19,11 @@ def gfftoMCScanx(args):
 			else:
 				line_split = line.split()
 				lines = dict()
-				if line_split[2] == 'CDS':
+				if line_split[0] == 'chrUn':
+					continue
+				elif elif line_split[2] != 'mRNA':
+					continue
+				else:
 					whole_id = line_split[8]
 					id_spl = whole_id.split(';')
 					lines['ID'] = id_spl[0].replace('ID=', '')
