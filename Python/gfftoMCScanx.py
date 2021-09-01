@@ -7,6 +7,8 @@
 @ Usage: python gfftoMCScanx.py  --input input_file --species species --output output_file
 @ Date: 2020-10-15
 """
+import sys
+import argparse
 
 def gfftoMCScanx(args):
 	row_list = []
