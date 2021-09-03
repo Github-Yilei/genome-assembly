@@ -166,7 +166,7 @@ def parse_ncbi_xml_to_csv(infile, outfile, query, delim = "\t"):
 
 def report_best_hit_on_query(infile, outfile = './best_hit.csv'):
     result = []
-
+    delim = "\t"
     # if you are planning on modifying this code:
     # The header list simply is a list of fields that you would like to have in the csv report.
     # Keep in mind here that the names for the fields cannot have a comma.
