@@ -46,13 +46,13 @@ def parse_fastp_json(args):
 	
 if __name__=='__main__':
 	parser = argparse.ArgumentParser(description =  "Parsing the josn files of fastp and building a ploting-ready data frame for R")
-	parser.add_argument('--input_path',
-	                    dest = 'input_path',
-						help = 'The absolute path of the fastp json file')
+	parser.add_argument('--input_path', 
+			    dest = 'input_path', 
+			    help = 'The absolute path of the fastp json file')
 	
 	parser.add_argument('--output', 
-						dest = "output", 
-						help = 'The result file in csv format')
+			    dest = "output", 
+			    help = 'The result file in csv format')
 	if len(sys.argv) <= 1:
         	parser.print_help()
         	sys.exit()
