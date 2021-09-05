@@ -521,17 +521,17 @@ pubfile.close();
 #print("\tExpansions\tGenes Gained\tEqual\tContractions\tGenes Lost\tFamilies Lost\tAverage Expansion\tSig Expansions\tSig Contractions\tTotal Sig Changes");
 
 annotfile=open(anotationtree, "w");
-annotfile.write("Node\tExpansions\tGenes Gained\tEqual\tContractions\tGenes Lost\tFamilies Lost\tAverage Expansion\tSig Expansions\tSig Contractions\tTotal Sig Changes" + "\n");
-
+annotfile.write("label\tExpansions\tGenes Gained\tEqual\tContractions\tGenes Lost\tFamilies Lost\tAverage Expansion\tSig Expansions\tSig Contractions\tTotal Sig Changes" + "\n");
 
 for species in results_main:
         outline = species + "\t";
         for col in results_main[species]:
                 outline = outline + str(col) + "\t";
-
+        temp = outline.rstrip("\t");
+        
         #print(outline);
         annotfile=open(anotationtree, "a");
-        annotfile.write(outline + "\n");
+        annotfile.write(temp + "\n");
 
 
 #print("CAFE labeled tree:\n" + labeled_tree + ';') ;
