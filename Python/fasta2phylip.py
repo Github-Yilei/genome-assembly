@@ -1,8 +1,5 @@
 import sys
-def fasta2phylip(args):
-  
-# usage
-USAGE = "\nusage: python convert_fasta2phylip.py [input fasta file] [output phy file]\n"
+
 def parseFasta(filename):
     fas = {}
     id = None
@@ -58,4 +55,4 @@ if __name__=='__main__':
                 sys.exit()
         args = parser.parse_args()
 
-        infernal_counter(args)
+        formatting(args)
