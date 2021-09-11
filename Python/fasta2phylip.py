@@ -1,4 +1,5 @@
 import sys
+import argparse
 
 def parseFasta(filename):
     fas = {}
@@ -11,11 +12,11 @@ def parseFasta(filename):
                 fas[id] = []
             else:
                 fas[id].append(line.rstrip())
-        for id, seq in fas.iteritems():
+        for id, seq in fas.items():
             fas[id] = ''.join(seq)
     return fas
 
-def formatting(args):
+def fasta2phylip(args):
     fas = parseFasta(args.input)
     outfile = args.output
     sequence_list = [] # To keep order of sequence
@@ -42,17 +43,17 @@ def formatting(args):
     phyfile.close()
 
 if __name__=='__main__':
-        parser = argparse.ArgumentParser(description = 'parsing the annotations file from eggnog-mapper and buidding a file')
+        parser = argparse.ArgumentParser(description = 'preparing fasta files for paml!!')
         parser.add_argument('--input', 
                             dest = 'input', 
                             help = 'input fasta file')
         parser.add_argument('--output', 
-                            dest = 'infernal_out', 
-                            help = 'output phy file')
+                            dest = 'output', 
+                            help = 'output phylip file for paml')
 
         if len(sys.argv) <= 1:
                 parser.print_help()
                 sys.exit()
         args = parser.parse_args()
 
-        formatting(args)
+        fasta2phylip(args)
