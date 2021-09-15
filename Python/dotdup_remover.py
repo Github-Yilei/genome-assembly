@@ -40,7 +40,7 @@ def dot_remover(args):
 				b = len(list(trans_max))
 				if a > b:
 					trans_max = trans
-				longest_seq += trans_max.strip("\n").strip(".") + "\n"
+			longest_seq += trans_max.strip("\n").strip(".") + "\n"
 
 	with open(args.output, 'w') as longest:
 		longest.write(longest_seq)
