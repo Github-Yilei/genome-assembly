@@ -225,6 +225,8 @@ prefix=species_name
 it is essential that using purge_dups to remove duplication after canu assembley.
 
 https://github.com/marbl/canu/issues/1814
+https://github.com/marbl/canu/issues/1933
+https://github.com/dfguan/purge_dups/issues/75
 
 **Data：**
 
