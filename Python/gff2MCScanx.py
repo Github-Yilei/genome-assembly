@@ -10,7 +10,7 @@
 import sys
 import argparse
 
-def gfftoMCScanx(args):
+def gff2MCScanx(args):
 	row_list = []
 	with open(args.input, 'r') as anotation_lines:
 		for line in anotation_lines:
@@ -45,4 +45,4 @@ if __name__ == '__main__':
         parser.print_help()
         sys.exit()
     args = parser.parse_args()
-    gfftoMCScanx(args)
+    gff2MCScanx(args)
