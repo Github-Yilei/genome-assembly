@@ -17,10 +17,10 @@ def vcf2matrix(args):
     sample_idx = list()
     with open(args.input_vcf, 'r') as vcf:
         for line in vcf:
+            line = line.strip()
             if line.startswith('##'):
                 continue
             elif line.startswith('#C'):
-                line = line.strip()
                 line_spl = line.split("\t")
                 sample_id = line_spl[0:2]
                 for i in sample_list:
