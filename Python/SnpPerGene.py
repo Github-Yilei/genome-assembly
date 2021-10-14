@@ -49,8 +49,9 @@ def SnpPerGene(args):
             num_of_snp = 0
         else:
             num_of_snp = int(conuter_dict[gene_id])
+        num_per_bp = "{}".format(num_of_snp/gene_len)
         with open(args.output, 'a') as f:
-            f.write(gene_id + "\t" + str(num_of_snp/gene_len) + "\t" + str(num_of_snp) + "\t" + str(gene_len) + "\n")
+            f.write(gene_id + "\t" + num_per_bp + "\t" + str(num_of_snp) + "\t" + str(gene_len) + "\n")
 
 if __name__=='__main__':
         parser = argparse.ArgumentParser(description = 'parsing the vcf and building a matrix with the number of SNPs per gene')
