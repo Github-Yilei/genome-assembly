@@ -35,14 +35,14 @@ def vcf2matrix(args):
                 temp += line_spl[0:2]
                 for i in sample_idx:
                     GT = line_spl[i]
-                    if '0/0' in GT:
+                    if '0/0' in GT or '0|0' in GT:
                         temp.append('ref')
                         ref_count += 1
-                    elif '0/1' in GT:
+                    elif '0/1' in GT or '0|1' in GT:
                         temp.append('het')
-                    elif '1/1' in GT:
+                    elif '1/1' in GT or '1|1' in GT:
                         temp.append('qry')
-                    elif './.' in GT:
+                    elif './.' in GT or '.|.' in GT:
                         temp.append('mis')
                     else:
                         temp.append('ukn')
