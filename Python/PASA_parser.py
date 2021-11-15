@@ -47,9 +47,15 @@ with open(input_file, 'r') as gff3:
         elif line.startswith('#PROT'):
             pep_spl = line.split("\t")
             pep_seq = pep_spl[1]
-            if len(pep_seq) > len(temp_pep['GFF']):
+            # if it's the first prot
+            if len(temp_pep['GFF']) == 0:
                 temp_pep['GFF'] = 'represnt_pep' + "\t" + pep_seq
                 gff_list.append(temp_pep)
+
+            elif len(pep_seq) > len(temp_pep['GFF']):
+                temp_pep['GFF'] = 'represnt_pep' + "\t" + pep_seq
+                gff_list[-1] = temp_pep
+
 
 sorted_list = sorted(gff_list, key=lambda k: (k['chrom'], int(k['start']), k['ID']))
 
@@ -88,24 +94,29 @@ for i in range(len(sorted_list)):
                 pep_file.write(pep_records)
             pep_id = ''
             records = ''
+            
         elif re.search(r"\tmRNA\t", line):
             cds   = 0
             exon  = 0
             mRNA  = mRNA + 1
             mRNA_id  = gene_id + "." + str(mRNA)
             records[8] = "ID={};Parent={};Name={}".format(mRNA_id, gene_id, mRNA_id)
+            
         elif re.search(r"\texon\t", line):
             exon = exon + 1
             exon_id  = mRNA_id + "_exon_" + str(exon)
             records[8] = "ID={};Parent={};Name={}".format(exon_id, mRNA_id, exon_id)
+            
         elif re.search(r"\tCDS\t", line):
             cds = cds + 1
             cds_id  = mRNA_id + "_cds_" + str(cds)
             records[8] = "ID={};Parent={};Name={}".format(cds_id, mRNA_id, cds_id)
+            
         elif re.search(r"\tfive_prime_UTR\t", line):
             UTR_5 = UTR_5 + 1
             UTR_5_id = gene_id + ".UTR_5." + str(UTR_5)
             records[8] = "ID={};Parent={}".format(UTR_5_id, gene_id)
+            
         elif re.search(r"\tthree_prime_UTR\t", line):
             UTR_3 = UTR_3 + 1
             UTR_3_id = gene_id + ".UTR_3." + str(UTR_3)
