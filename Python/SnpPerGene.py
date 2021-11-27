@@ -35,7 +35,7 @@ def SnpPerGene(args):
                         try:
                             conuter_dict[pos_lis[3]]
                         except KeyError:
-                            conuter_dict[pos_lis[3]] = 0
+                            conuter_dict[pos_lis[3]] = 1
                         else:
                             conuter_dict[pos_lis[3]] += 1
                         break
