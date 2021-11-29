@@ -14,6 +14,7 @@ def ChromWindow(fai, windows):
 
             # buliding windows
             steps = []
+      #  roof of end/windows
             for i in range(0, end, windows):
                 steps.append(i)
  #           if max_index * windows == end:
