@@ -10,7 +10,7 @@ def ChromWindow(fai, windows):
             chrom = line_spl[0]
             end = int(line_spl[1])
             windows = int(windows)
-            max_index = int(end/windows)
+ #           max_index = int(end/windows)
 
             # buliding windows
             steps = []
