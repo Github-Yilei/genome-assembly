@@ -16,19 +16,18 @@ def ChromWindow(fai, windows):
             steps = []
             for i in range(0, end, windows):
                 steps.append(i)
+ #           if max_index * windows == end:
+            start_temp = steps
+   
+            end_temp = steps[1:]
+            end_temp.append(end)
 
-            if max_index * windows == end:
-                start_temp = steps
+#            elif max_index * windows < end:
+#                start_temp = steps
+#                start_temp.append((max_index + 1) * windows)
 
-                end_temp = steps[1:]
-                end_temp.append(end)
-
-            elif max_index * windows < end:
-                start_temp = steps
-                start_temp.append((max_index + 1) * windows)
-
-                end_temp = start_temp[1: ]
-                end_temp.append(end)
+#                end_temp = start_temp[1: ]
+#                end_temp.append(end)
 
             for i in range(0, len(end_temp)):
                 chrom_windows.append([chrom, start_temp[i], end_temp[i]])
