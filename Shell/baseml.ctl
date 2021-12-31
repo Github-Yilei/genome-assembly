@@ -1,6 +1,7 @@
-      seqfile = PAML/Phylip/OG0013888.nuc.fa.paml * sequence data filename
-     treefile = PAML/NucTree/RAxML_bestTree.OG0013888.tree      * tree structure file name
-      outfile = PAML/PAML_Out/OG0013888.txt           * main result file name
+# http://wiki.cathdb.info/wiki-beta/doku.php?id=tutorials:eccb_t2_codeml
+      seqfile = Phylip/OG0013888.nuc.fa.paml * sequence data filename
+     treefile = NucTree/RAxML_bestTree.OG0013888.tree      * tree structure file name
+      outfile = PAML_Out/OG0013888.txt           * main result file name
 
         noisy = 1  * 0,1,2,3,9: how much rubbish on the screen
       verbose = 0  * 0: concise; 1: detailed, 2: too much
