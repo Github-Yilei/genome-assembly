@@ -93,7 +93,7 @@ for i in range(len(sorted_list)):
             with open(pep_out, "a") as pep_file:
                 pep_file.write(pep_records)
             pep_id = ''
-      
+            records = ''
         elif re.search(r"\tmRNA\t", line):
             cds   = 0
             exon  = 0
@@ -118,6 +118,8 @@ for i in range(len(sorted_list)):
             records[8] = "ID={};Parent={}".format(UTR_3_id, gene_id)
         else:
             continue
-        with open(gff_out, "a") as new_gff:
-            new_gff.write("\t".join(records) +'\n')
+        # skip the position of pep seq
+        if len(records ) == 9:
+            with open(gff_out, "a") as new_gff:
+                new_gff.write("\t".join(records) +'\n')
 
