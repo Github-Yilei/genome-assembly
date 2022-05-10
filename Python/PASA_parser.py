@@ -74,10 +74,7 @@ prefix = "Cp"
 for i in range(len(sorted_list)):
         temp = sorted_list[i]
         line = temp['GFF'].strip()
-        # renamer
-        if  line.startswith('chr'):
-            records = line.split("\t")
-            records[1] = "PASA"
+        records = line.split("\t")
         if re.search(r"\tgene\t", line):
             count = count + 10
             mRNA  = 0
@@ -96,7 +93,7 @@ for i in range(len(sorted_list)):
             with open(pep_out, "a") as pep_file:
                 pep_file.write(pep_records)
             pep_id = ''
-            records = ''
+      
         elif re.search(r"\tmRNA\t", line):
             cds   = 0
             exon  = 0
