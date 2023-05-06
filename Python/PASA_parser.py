@@ -1,3 +1,6 @@
+'''
+PASA_parser was used to parse the gff3 file of Gene Structure Annotation and Analysis Using PASA and reslut into sorted gff3 and pep file.
+'''
 import sys
 import re
 input_file = sys.argv[1]
