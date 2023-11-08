@@ -1,6 +1,6 @@
 import sys
 import pathlib
-
+# file_path：the ancestor path of EDTA result
 file_path = sys.argv[1]
 
 sample_idx = {}
