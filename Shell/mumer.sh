@@ -1,7 +1,11 @@
 
 Mummer=~/miniconda3/bin
 ${Mummer}/nucmer --mum -l 1000 -c 200 -g 200  -p hap2 monoploid.fa hap2.fa
-${Mummer}/delta-filter -1 -q -r hap2.delta > hap2_filtered.delta
+
+# 长度在1000，相似度大于90
+# -1: 1对1联配，允许重排，是-r和-q的交集
+
+${Mummer}/delta-filter -1 -i 90 -l 1000 hap2.delta > hap2_filtered.delta
 ${Mummer}/show-coords -T -q -H -r hap2_filtered.delta > hap2_filtered.coords
 
 # dot plot
