@@ -6,6 +6,7 @@ import re
 input_file = sys.argv[1]
 pep_out = sys.argv[2]
 gff_out = sys.argv[3]
+prefix = "Cp"
 
 gff_dict =  dict()
 uniq_id_list = list()
@@ -18,7 +19,18 @@ with open(input_file, 'r') as gff3:
             gff_key = ''
             temp_pep = ''
             temp = {}
-        elif line.startswith('chr'):
+        elif line.startswith('#PROT'):
+            pep_spl = line.split("\t")
+            pep_seq = pep_spl[1]
+            # if this is the first prot
+            if len(temp_pep) == 0:
+                temp_pep = 'represnt_pep' + "\t" + pep_seq
+                gff_dict[gff_key].append(temp_pep)
+
+            elif len(pep_seq) > len(temp_pep):
+                temp_pep = 'represnt_pep' + "\t" + pep_seq
+                gff_dict[gff_key][-1] = temp_pep
+        else:
             line_spl = line.split("\t")
             line_spl[1] = 'PASA'
             gff_value = '\t'.join(line_spl[:-1]) + "\tPlaceholders"
@@ -36,17 +48,7 @@ with open(input_file, 'r') as gff3:
             else:
                 gff_dict[gff_key].append(gff_value)
 
-        elif line.startswith('#PROT'):
-            pep_spl = line.split("\t")
-            pep_seq = pep_spl[1]
-            # if this is the first prot
-            if len(temp_pep) == 0:
-                temp_pep = 'represnt_pep' + "\t" + pep_seq
-                gff_dict[gff_key].append(temp_pep)
 
-            elif len(pep_seq) > len(temp_pep):
-                temp_pep = 'represnt_pep' + "\t" + pep_seq
-                gff_dict[gff_key][-1] = temp_pep
 # sort keys
 sorted_list = sorted(uniq_id_list, key=lambda k: (k['chrom'], int(k['start'])))
 
@@ -56,7 +58,7 @@ cds   = 0
 exon  = 0
 UTR_5 = 0
 UTR_3 = 0
-prefix = "Cp"
+
 
 for i in range(len(sorted_list)):
     temp = sorted_list[i]
