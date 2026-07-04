@@ -6,7 +6,7 @@ import re
 input_file = sys.argv[1]
 pep_out = sys.argv[2]
 gff_out = sys.argv[3]
-prefix = "Cp"
+prefix = sys.argv[4]
 
 gff_dict =  dict()
 uniq_id_list = list()
