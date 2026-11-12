@@ -19,6 +19,7 @@ def genomeThreader_to_evm_gff3(args):
 			if not line.startswith("\n") and not line.startswith("#"):
 				records = line.split("\t")
 				records[1] = "gth"
+				records[2] = "nucleotide_to_protein_match"
 			if re.search(r"\tgene\t", line):
 				exon = 0
 				tmp = records[8].replace('ID=', '')
@@ -27,7 +28,7 @@ def genomeThreader_to_evm_gff3(args):
 			elif re.search(r"\texon\t", line):
 				exon += 1
 				exon_id  = gene_id + "." + str(exon)
-				records[8] = "ID={};Parent={};Name={}".format(exon_id, gene_id, exon_id)
+				records[8] = "ID={};Name={}".format(gene_id, exon_id)
 			else:
 				continue
 			with open(args.output, "a") as new_gff:
